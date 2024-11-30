@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Truck, Plane, BarChart2, Network, FileCheck, Users, ClipboardList, LayoutDashboard } from 'lucide-react';
+import LoginModal from '../components/LoginModal';
+import {
+  Truck,
+  Plane,
+  BarChart2,
+  Network,
+  FileCheck,
+  Users,
+  ClipboardList,
+  LayoutDashboard,
+} from 'lucide-react';
 
 export default function Services() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   const services = [
     {
       icon: <BarChart2 className="w-8 h-8" />,
@@ -35,34 +47,6 @@ export default function Services() {
     },
   ];
 
-  const faqs = [
-    {
-      question: 'How can stakeholders access information?',
-      answer: 'Description',
-      date: 'Dec 14, 2023'
-    },
-    {
-      question: 'What technology do we use for tracking?',
-      answer: 'Description',
-      date: 'Dec 14, 2023'
-    },
-    {
-      question: 'How do you prioritize resource distribution?',
-      answer: 'Description',
-      date: 'Dec 14, 2023'
-    },
-    {
-      question: 'What makes Chain Flow unique?',
-      answer: 'Description',
-      date: 'Dec 14, 2023'
-    },
-    {
-      question: 'How does AI enhance our operations?',
-      answer: 'Description',
-      date: 'Dec 14, 2023'
-    }
-  ];
-
   return (
     <div className="min-h-screen font-sans">
       <Navbar />
@@ -70,10 +54,10 @@ export default function Services() {
       {/* Services Header */}
       <div className="container mx-auto py-16">
         <h1 className="text-5xl mb-6">
-          Our <span className="text-red-500">Services</span>
+          Our <span className="text-blue-900">Services</span>
         </h1>
         <p className="text-gray-600 max-w-2xl">
-          Chain Flow combines cutting-edge technology to enhance humanitarian logistics and supply chain management, ensuring timely and effective assistance in crisis situations.
+          Flowchain combines cutting-edge technology to enhance humanitarian logistics and supply chain management, ensuring timely and effective assistance in crisis situations.
         </p>
       </div>
 
@@ -83,9 +67,9 @@ export default function Services() {
           {services.map((service, index) => (
             <div
               key={index}
-              className="bg-gray-50 p-8 rounded-2xl flex flex-col gap-4"
+              className="bg-gray-50 p-8 rounded-2xl flex flex-col gap-4 transition-all duration-300 hover:-translate-y-1 hover:bg-blue-900 hover:text-white group cursor-pointer"
             >
-              <div className="text-blue-900">
+              <div className="text-blue-900 group-hover:text-white transition-colors duration-300">
                 {service.icon}
               </div>
               <h3 className="text-lg">{service.title}</h3>
@@ -93,29 +77,19 @@ export default function Services() {
           ))}
         </div>
         <div className="mt-12">
-          <button className="px-8 py-3 bg-blue-900 text-white rounded-full">
+          <button
+            onClick={() => setIsLoginModalOpen(true)}
+            className="px-8 py-3 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+          >
             GET STARTED
           </button>
         </div>
       </div>
 
-      {/* FAQ Section */}
-      <div className="container mx-auto py-16">
-        <h2 className="text-4xl mb-12">Frequently Asked Questions</h2>
-        <div className="space-y-6">
-          {faqs.map((faq, index) => (
-            <div key={index} className="border-b border-gray-200 pb-6">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg">{faq.question}</h3>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-500">{faq.date}</span>
-                  <button className="text-blue-900">See more</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
 
       <Footer />
     </div>

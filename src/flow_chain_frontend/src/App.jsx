@@ -6,6 +6,7 @@ import Services from './pages/Services';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
 import SupplierDashboard from './pages/dashboard/SupplierDashboard';
 import DriverDashboard from './pages/dashboard/DriverDashboard';
+import FieldWorkerDashboard from './pages/dashboard/FieldWorkerDashboard';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/dashboard/admin" element={<AdminDashboard />} />
         <Route path="/dashboard/supplier" element={<SupplierDashboard />} />
         <Route path="/dashboard/driver" element={<DriverDashboard />} />
+        <Route path="/dashboard/field-worker" element={<FieldWorkerDashboard />} />
       </Routes>
     </Router>
   );
