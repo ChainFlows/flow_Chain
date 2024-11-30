@@ -1,0 +1,38 @@
+{
+  "canisters": {
+    "flow_chain_backend": {
+      "candid": "src/flow_chain_backend/flow_chain_backend.did",
+      "package": "flow_chain_backend",
+      "type": "rust"
+    },
+    "flow_chain_frontend": {
+      "dependencies": [
+        "flow_chain_backend"
+      ],
+      "source": [
+        "src/flow_chain_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "flow_chain_frontend"
+    },
+    "internet_identity": {
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "frontend": {},
+      "remote": {
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
+      },
+      "type": "custom",
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
