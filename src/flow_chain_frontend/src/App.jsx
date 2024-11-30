@@ -1,31 +1,23 @@
-import { useState } from 'react';
-import { flow_chain_backend } from 'declarations/flow_chain_backend';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Services from './pages/Services';
+import AdminDashboard from './pages/dashboard/AdminDashboard';
+import SupplierDashboard from './pages/dashboard/SupplierDashboard';
+import DriverDashboard from './pages/dashboard/DriverDashboard';
 
-function App() {
-  const [greeting, setGreeting] = useState('');
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    flow_chain_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
-
+export default function App() {
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/dashboard/admin" element={<AdminDashboard />} />
+        <Route path="/dashboard/supplier" element={<SupplierDashboard />} />
+        <Route path="/dashboard/driver" element={<DriverDashboard />} />
+      </Routes>
+    </Router>
   );
 }
-
-export default App;
