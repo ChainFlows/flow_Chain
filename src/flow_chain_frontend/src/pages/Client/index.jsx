@@ -1,25 +1,27 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { login } from "../../utils/auth";
-import { Notification } from "../../components/utils/Notifications";
-import Login from "./Login";
-import { getClientCompanyByOwner } from "../../utils/clientCompany";
-import { Loader } from "../../components/utils";
-import ActivateClientAccount from "./ActivateClientAccount";
-import CompanyOverviewPage from "./CompanyOverview";
+// import { Notification } from "../../components/utils/Notifications";
+// import Login from "./Login";
+// import { getClientCompanyByOwner } from "../../utils/clientCompany";
+// import { Loader } from "../../components/utils";
+// import ActivateClientAccount from "./ActivateClientAccount";
+// import CompanyOverviewPage from "./CompanyOverview";
 
 import {flow_chain_backend} from "../../../../declarations/flow_chain_backend";
+import AdminDashboard from "../dashboard/AdminDashboard";
 
 const Client = () => {
   const [client, setClient] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const isAuthenticated = window.auth.isAuthenticated;
+  // const isAuthenticated = window.auth.isAuthenticated;
 
   const fetchClient = useCallback(async () => {
     try {
       setLoading(true);
       setClient(
-        await getClientCompanyByOwner().then(async (res) => {
+        await flow_chain_backend.get_client_by_owner()
+          .then(async (res) => {
           console.log(res);
           return res.Ok;
         })
@@ -39,13 +41,11 @@ const Client = () => {
 
   return (
     <>
-      <Notification />
+      {/* <Notification />
       {isAuthenticated ? (
         !loading ? (
           client?.name ? (
-            <main>
-              <CompanyOverviewPage client={client} />
-            </main>
+              <AdminDashboard />
           ) : (
             <ActivateClientAccount
               fetchClient={fetchClient}
@@ -56,7 +56,8 @@ const Client = () => {
         )
       ) : (
         <Login login={login} />
-      )}
+      )} */}
+      <h1>Paragrapgh written</h1>
     </>
   );
 };
