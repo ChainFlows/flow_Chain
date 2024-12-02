@@ -10,6 +10,8 @@ import FieldWorkerDashboard from "./pages/dashboard/FieldWorkerDashboard";
 import Client from "./pages/Client";
 import SupplierRegistrationForm from "./components/forms/SupplierRegistrationForm";
 import DriverRegistrationForm from "./components/forms/DriverRegistrationForm";
+import ClientRegistrationForm from "./components/forms/ClientRegistrationForm";
+
 import Supplier from "./pages/Supplier";
 
 export default function App() {
@@ -27,6 +29,10 @@ export default function App() {
         <Route
           path="/driver-registration"
           element={<DriverRegistrationForm />}
+        />
+        <Route
+          path="/client-registration"
+          element={<ClientRegistrationForm />}
         />
         <Route path="/suppliers" element={<Supplier />} />
         <Route path="/dashboard/admin" element={<AdminDashboard />} />

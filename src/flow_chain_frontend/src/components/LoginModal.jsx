@@ -20,6 +20,9 @@ export default function LoginModal({ isOpen, onClose }) {
         case 'Driver':
           navigate('/driver-registration');
           break;
+        case 'Client':
+          navigate('/client-registration');
+          break;
         default:
           const path = `/dashboard/${selectedRole.toLowerCase().replace(' ', '-')}`;
           navigate(path);
