@@ -1,10 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './index.scss';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import { initializeContract } from "./utils/icp";
+// import "./styles/tailwind.css";
+// import "./index.css";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+// import "bootstrap-icons/font/bootstrap-icons.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
+
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+window.renderICPromise = initializeContract()
+  .then(() => {
+    root.render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    );
+  })
+  .catch(console.error);

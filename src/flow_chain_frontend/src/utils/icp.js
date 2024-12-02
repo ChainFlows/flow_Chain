@@ -1,15 +1,14 @@
 import { getflowchainCanister, getLedgerCanister } from "./canisterFactory";
-import { getAuthClient } from "./auth";
+import { AuthClient } from "@dfinity/auth-client";
 
 export async function initializeContract() {
-  const authClient = await getAuthClient();
+  const client = await AuthClient.create();
   window.auth = {};
+  window.auth.client = client;
+  window.auth.identity = client.getIdentity();
+  window.auth.principal = client.getIdentity()?.getPrincipal();
+  window.auth.principalText = client.getIdentity()?.getPrincipal().toText();
   window.canister = {};
-  window.auth.client = authClient;
-  window.auth.isAuthenticated = await authClient.isAuthenticated();
-  window.auth.identity = authClient.getIdentity();
-  window.auth.principal = authClient.getIdentity()?.getPrincipal();
-  window.auth.principalText = authClient.getIdentity()?.getPrincipal().toText();
-  window.canister.flowchain = await getflowchainCanister(); //Implemented in canisterFactory.js well 
+  window.canister.flowchain = await getflowchainCanister(); //Implemented in canisterFactory.js well
   window.canister.ledger = await getLedgerCanister();
 }
