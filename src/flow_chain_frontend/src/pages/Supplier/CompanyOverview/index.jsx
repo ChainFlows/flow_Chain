@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useState } from "react";
 //   button,
 //   NotificationSuccess,
 //   NotificationError,
-  
+
 //   SelectBox,
 // } from "../../../components/utils";
 // import * as Images from "../../../assets/images";
@@ -198,9 +198,9 @@ export default function CompanyOverviewPage({ supplier }) {
               content="Web site created using create-react-app"
             />
           </div>
-            <div className="flex flex-row justify-start items-start w-full h-full bg-gray-200 shadow-sm">
-              test
-            {/* <div className="mx-auto flex flex-col items-center justify-start w-[85%]">
+          <div className="flex flex-row justify-start items-start w-full h-full bg-gray-200 shadow-sm">
+            test
+            <div className="mx-auto flex flex-col items-center justify-start w-[85%]">
               <div className="flex flex-col items-start justify-start w-full mt-[2rem]">
                 <div className="flex flex-row justify-between items-center w-full">
                   <div className="flex flex-row justify-end items-center w-full gap-[21px]">
@@ -287,15 +287,18 @@ export default function CompanyOverviewPage({ supplier }) {
                                 <Text size="2xl" as="p">
                                   July
                                 </Text>
-                                {/* <div className="flex flex-row justify-between w-auto"> *
-                                <Text as="p" className="">
-                                  August
-                                </Text>
-                                <Text as="p">Septemb</Text>
-                                <Text as="p">October</Text>
-                                <Text as="p">Novembe</Text>
-                                <Text as="p">Decembe</Text>
-                                {/* </div> *
+                                <div className="flex flex-row justify-between w-auto">
+                                  {" "}
+                                  *
+                                  <Text as="p" className="">
+                                    August
+                                  </Text>
+                                  <Text as="p">Septemb</Text>
+                                  <Text as="p">October</Text>
+                                  <Text as="p">Novembe</Text>
+                                  <Text as="p">Decembe</Text>
+                                </div>{" "}
+                                *
                               </div>
                             </div>
                           </div>
@@ -307,7 +310,7 @@ export default function CompanyOverviewPage({ supplier }) {
                       selectedTabClassName="!text-gray-900_01 bg-blue_gray-900_0c shadow-xs rounded-[20px]"
                       selectedTabPanelClassName="mt-[20px] mb-[7px] ml-[7px] relative tab-panel--selected"
                     >
-                      <Text  as="p" className="mt-4 ml-[9px]">
+                      <Text as="p" className="mt-4 ml-[9px]">
                         Jobs
                       </Text>
                       <div className="flex flex-col items-start justify-start w-full  mt-4 gap-[29px]">
@@ -315,7 +318,7 @@ export default function CompanyOverviewPage({ supplier }) {
                           <Tab className="mt-0.5 text-gray-900_01 text-[11px] font-normal">
                             <button
                               // color="blue_gray_900_0c"
-                              // 
+                              //
                               className="ml-px rounded-[20px]"
                               onClick={() => setTab("new")}
                             >
@@ -325,7 +328,7 @@ export default function CompanyOverviewPage({ supplier }) {
                           <Tab className="mt-0.5 text-gray-900_01 text-[11px] font-normal">
                             <button
                               // color="blue_gray_900_0c"
-                              // 
+                              //
                               className="ml-px rounded-[20px]"
                               onClick={() => setTab("current")}
                             >
@@ -335,7 +338,7 @@ export default function CompanyOverviewPage({ supplier }) {
                           <Tab className="mt-0.5 text-gray-900_01 text-[11px] font-normal">
                             <button
                               // color="blue_gray_900_0c"
-                              // 
+                              //
                               className="ml-px rounded-[20px]"
                               onClick={() => setTab("completed")}
                             >
@@ -547,7 +550,7 @@ export default function CompanyOverviewPage({ supplier }) {
                       selectedTabClassName="!text-gray-900_01 bg-blue_gray-900_0c shadow-xs rounded-[20px]"
                       selectedTabPanelClassName="mt-[88px] mb-[7px] ml-[7px] relative tab-panel--selected"
                     >
-                      <Text  as="p" className="mt-4 ml-[9px]">
+                      <Text as="p" className="mt-4 ml-[9px]">
                         New Orders Listings
                       </Text>
                       <div className="w-[99%] ">
@@ -636,7 +639,7 @@ export default function CompanyOverviewPage({ supplier }) {
                         </Text>
                         <div className="flex flex-row justify-start mt-[30px]">
                           <button
-                            // 
+                            //
                             leftIcon={
                               <Img
                                 src={Images.img_logo_facebook_1}
@@ -648,7 +651,7 @@ export default function CompanyOverviewPage({ supplier }) {
                             Facebook
                           </button>
                           <button
-                            // 
+                            //
                             leftIcon={
                               <Img
                                 src={Images.img_logo_twitter_1}
@@ -660,7 +663,7 @@ export default function CompanyOverviewPage({ supplier }) {
                             Twitter
                           </button>
                           <button
-                            // 
+                            //
                             leftIcon={
                               <Img
                                 src={Images.img_logo_linkedin_1}
@@ -967,7 +970,7 @@ export default function CompanyOverviewPage({ supplier }) {
                   </div>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </>
       )}

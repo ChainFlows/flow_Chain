@@ -15,7 +15,7 @@ import {
   payDriver,
 } from "../../utils/supplyCompany";
 
-export default function SupplierDashboard() {
+export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
   const [loading, setLoading] = useState(false);
   const [orderListings, setOrderListings] = useState([]);
@@ -24,7 +24,7 @@ export default function SupplierDashboard() {
   const [newOrders, setNewOrders] = useState([]);
   const [tab, setTab] = useState("new");
 
-  const { id } = 0;
+  const { id } = supplier;
 
   // fetch new order listings
   const fetchNewOrderListings = useCallback(async () => {
@@ -97,12 +97,12 @@ export default function SupplierDashboard() {
     }
   };
 
-  // useEffect(() => {
-  //   fetchNewOrders();
-  //   fetchCompletedOrders();
-  //   fetchCurrentOrders();
-  //   fetchNewOrderListings();
-  // }, []);
+  useEffect(() => {
+    fetchNewOrders();
+    fetchCompletedOrders();
+    fetchCurrentOrders();
+    fetchNewOrderListings();
+  }, []);
 
   console.log("newOrders", newOrders);
   console.log("completedOrders", completedOrders);
