@@ -13,8 +13,17 @@ export default function LoginModal({ isOpen, onClose }) {
 
   const handleLogin = () => {
     if (selectedRole) {
-      const path = `/dashboard/${selectedRole.toLowerCase().replace(' ', '-')}`;
-      navigate(path);
+      switch (selectedRole) {
+        case 'Supplier':
+          navigate('/supplier-registration');
+          break;
+        case 'Driver':
+          navigate('/driver-registration');
+          break;
+        default:
+          const path = `/dashboard/${selectedRole.toLowerCase().replace(' ', '-')}`;
+          navigate(path);
+      }
       onClose();
     }
   };
