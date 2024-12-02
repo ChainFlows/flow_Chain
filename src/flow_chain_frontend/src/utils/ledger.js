@@ -1,4 +1,4 @@
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 
 export async function transferICP(sellerAddress, amount, memo) {
   const canister = window.canister.ledger;

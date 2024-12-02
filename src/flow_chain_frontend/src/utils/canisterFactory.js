@@ -1,8 +1,8 @@
 import { HttpAgent, Actor } from "@dfinity/agent";
-import { idlFactory as chainflowIDL } from "../../../declarations/flow_chain_backendflow_chain_backend.did.js";
-import { idlFactory as ledgerIDL } from "../../../declarations/ledger_canister/ledger_canister.did.js"; //No such file or directory
+import { idlFactory as chainflowIDL } from "../../../declarations/flow_chain_backend/flow_chain_backend.did.js";
+import { idlFactory as ledgerIDL } from "../../../declarations/internet_identity/internet_identity.did.js"; //No such file or directory
 
-const chainflow_CANISTER_ID = "be2us-64aaa-aaaaa-qaabq-cai";
+const chainflow_CANISTER_ID = "bkyz2-fmaaa-aaaaa-qaaaq-cai";
 const LEDGER_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 const HOST = "http://localhost:4943";
 

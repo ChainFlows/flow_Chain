@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { AuthClient } from '@dfinity/auth-client';
+import { useState, useEffect } from "react";
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -8,7 +7,7 @@ export const useAuth = () => {
   const [authState, setAuthState] = useState({
     walletAddress: null,
     principal: null,
-    authProvider: null
+    authProvider: null,
   });
 
   useEffect(() => {
@@ -17,22 +16,24 @@ export const useAuth = () => {
 
   const initAuth = async () => {
     try {
-      const client = await AuthClient.create();
+      const client = window.auth.client;
+
       setAuthClient(client);
       const isAuthenticated = await client.isAuthenticated();
+      console.log("authd", isAuthenticated);
       if (isAuthenticated) {
         const identity = client.getIdentity();
         const principal = identity.getPrincipal();
-        const storedProvider = localStorage.getItem('auth_provider');
+        const storedProvider = localStorage.getItem("auth_provider");
         setAuthState({
           walletAddress: principal.toText(),
           principal: principal,
-          authProvider: storedProvider || null
+          authProvider: storedProvider || null,
         });
       }
       setIsAuthenticated(isAuthenticated);
     } catch (error) {
-      console.error('Error initializing auth:', error);
+      console.error("Error initializing auth:", error);
     } finally {
       setIsLoading(false);
     }
@@ -40,11 +41,11 @@ export const useAuth = () => {
 
   const loginWithII = async () => {
     if (!authClient) {
-      throw new Error('Auth client not initialized');
+      throw new Error("Auth client not initialized");
     }
     return new Promise((resolve, reject) => {
       authClient.login({
-        identityProvider: 'https://identity.ic0.app/#authorize',//change this for local dev
+        identityProvider: "http://be2us-64aaa-aaaaa-qaabq-cai.localhost:4943/", //change this for local dev
         maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000), // 7 days
         derivationOrigin: window.location.origin,
         windowOpenerFeatures:
@@ -56,36 +57,36 @@ export const useAuth = () => {
             const identity = authClient.getIdentity();
             const principal = identity.getPrincipal();
             const principalId = principal.toText();
-            console.log('Generated Principal ID:', principalId);
+            console.log("Generated Principal ID:", principalId);
             setAuthState({
               walletAddress: principalId,
               principal: principal,
-              authProvider: 'II'
+              authProvider: "II",
             });
-            localStorage.setItem('auth_provider', 'II');
-            localStorage.setItem('ii_principal', principalId);
+            localStorage.setItem("auth_provider", "II");
+            localStorage.setItem("ii_principal", principalId);
             setIsAuthenticated(true);
             resolve(true);
           } catch (error) {
-            console.error('Error getting identity:', error);
+            console.error("Error getting identity:", error);
             reject(error);
           }
         },
         onError: (error) => {
-          console.error('Login error:', error);
+          console.error("Login error:", error);
           reject(error);
-        }
+        },
       });
     });
   };
 
   const loginWithNFID = async () => {
     if (!authClient) {
-      throw new Error('Auth client not initialized');
+      throw new Error("Auth client not initialized");
     }
     return new Promise((resolve, reject) => {
       authClient.login({
-        identityProvider: 'https://nfid.one/authenticate/',
+        identityProvider: "https://nfid.one/authenticate/",
         maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000),
         windowOpenerFeatures:
           `left=${window.screen.width / 2 - 525 / 2},` +
@@ -98,21 +99,21 @@ export const useAuth = () => {
             setAuthState({
               walletAddress: principal.toText(),
               principal: principal,
-              authProvider: 'NFID'
+              authProvider: "NFID",
             });
-            localStorage.setItem('auth_provider', 'NFID');
-            localStorage.setItem('nfid_wallet', principal.toText());
+            localStorage.setItem("auth_provider", "NFID");
+            localStorage.setItem("nfid_wallet", principal.toText());
             setIsAuthenticated(true);
             resolve(true);
           } catch (error) {
-            console.error('Error getting identity:', error);
+            console.error("Error getting identity:", error);
             reject(error);
           }
         },
         onError: (error) => {
-          console.error('Login error:', error);
+          console.error("Login error:", error);
           reject(error);
-        }
+        },
       });
     });
   };
@@ -124,11 +125,11 @@ export const useAuth = () => {
     setAuthState({
       walletAddress: null,
       principal: null,
-      authProvider: null
+      authProvider: null,
     });
-    localStorage.removeItem('auth_provider');
-    localStorage.removeItem('nfid_wallet');
-    localStorage.removeItem('ii_principal');
+    localStorage.removeItem("auth_provider");
+    localStorage.removeItem("nfid_wallet");
+    localStorage.removeItem("ii_principal");
   };
 
   return {
@@ -140,6 +141,6 @@ export const useAuth = () => {
     authClient,
     walletAddress: authState.walletAddress,
     principal: authState.principal,
-    authProvider: authState.authProvider
+    authProvider: authState.authProvider,
   };
 };
