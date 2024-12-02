@@ -515,7 +515,7 @@ fn delete_client_company(id: u64) -> Result<Client, String> {
 /// Start of Supplier Functions ///
 /// Create Supplier Company
 #[ic_cdk::update]
-fn create_supplier_company(payload: SupplierCompanyPayload) -> Result<Supplier, String> {
+pub fn create_supplier_company(payload: SupplierCompanyPayload) -> Result<Supplier, String> {
     let supplier = Supplier {
         id: generate_uuid(),
         name: payload.name,
