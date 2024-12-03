@@ -343,6 +343,15 @@ pub struct WarehousePayload {
     pub(crate) capacity: u64,
 }
 
+// warehouse add item payload
+#[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+pub struct WarehouseAddItemPayload {
+    pub(crate) warehouse_id: u64,
+    pub(crate) item_id: u64,
+    pub(crate) quantity: u64,
+    pub(crate) shelf_location: String,
+}
+
 
 #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
 pub struct PaymentReservation {

@@ -1572,53 +1572,50 @@ fn get_supplier_warehouses(supplier_id: u64) -> Vec<Warehouse> {
 // Add Item to Warehouse Inventory
 #[ic_cdk::update]
 fn add_item_to_warehouse(
-    warehouse_id: u64,
-    item_id: u64,
-    quantity: u64,
-    shelf_location: String
+    payload: WarehouseAddItemPayload
 ) -> Result<Warehouse, String> {
     WAREHOUSES.with(|warehouses| {
         let mut warehouses = warehouses.borrow_mut();
         
-        if let Some(mut warehouse) = warehouses.get(&warehouse_id) {
+        if let Some(mut warehouse) = warehouses.get(&payload.warehouse_id) {
             // Check if item exists
             let item = ITEMS.with(|items| {
-                items.borrow().get(&item_id)
+                items.borrow().get(&payload.item_id)
             }).ok_or("Item not found")?;
 
             // Check warehouse capacity
-            if warehouse.used_capacity + quantity > warehouse.capacity {
+            if warehouse.used_capacity + payload.quantity > warehouse.capacity {
                 return Err("Warehouse capacity exceeded".to_string());
             }
 
             // Check if item already exists in inventory
             if let Some(inventory_item) = warehouse.inventory.iter_mut()
-                .find(|inv| inv.item_id == item_id) {
+                .find(|inv| inv.item_id == payload.item_id) {
                 // Update existing inventory
-                inventory_item.quantity += quantity;
+                inventory_item.quantity += payload.quantity;
                 inventory_item.last_updated = ic_cdk::api::time().to_string();
             } else {
                 // Add new inventory item
                 warehouse.inventory.push(WarehouseInventory {
-                    item_id,
-                    quantity,
-                    shelf_location,
+                    item_id: payload.item_id,
+                    quantity: payload.quantity,
+                    shelf_location: payload.shelf_location,
                     last_updated: ic_cdk::api::time().to_string(),
                 });
             }
 
             // Update current capacity
-            warehouse.used_capacity += quantity;
+            warehouse.used_capacity += payload.quantity;
 
             // Update warehouse status if full
             if warehouse.used_capacity >= warehouse.capacity {
                 warehouse.status = "Full".to_string();
             }
 
-            warehouses.insert(warehouse_id, warehouse.clone());
+            warehouses.insert(payload.warehouse_id, warehouse.clone());
             Ok(warehouse)
         } else {
-            Err(format!("Warehouse with id={} not found", warehouse_id))
+            Err(format!("Warehouse with id={} not found", payload.warehouse_id))
         }
     })
 }
@@ -1743,6 +1740,34 @@ fn get_warehouse_inventory(warehouse_id: u64) -> Result<Vec<(ItemDetails, u64, S
         } else {
             Err(format!("Warehouse with id={} not found", warehouse_id))
         }
+    })
+}
+
+// get all warehouse inventory for a given supplier
+#[ic_cdk::query]
+fn get_all_warehouse_inventory(supplier_id: u64) -> Vec<(Warehouse, Vec<(ItemDetails, u64, String)>)> {
+    WAREHOUSES.with(|warehouses| {
+        warehouses
+            .borrow()
+            .iter()
+            .filter_map(|(_, warehouse)| {
+                if warehouse.supplier_id == supplier_id {
+                    let mut inventory_details = Vec::new();
+                    for inv_item in &warehouse.inventory {
+                        if let Some(item) = ITEMS.with(|items| items.borrow().get(&inv_item.item_id)) {
+                            inventory_details.push((
+                                item.clone(),
+                                inv_item.quantity,
+                                inv_item.shelf_location.clone()
+                            ));
+                        }
+                    }
+                    Some((warehouse.clone(), inventory_details))
+                } else {
+                    None
+                }
+            })
+            .collect()
     })
 }
 
