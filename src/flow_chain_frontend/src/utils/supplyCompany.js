@@ -138,6 +138,18 @@ export async function addDriver(companyId, driverId) {
   }
 }
 
+export async function getSupplyCompanyBids(CompanyId) {
+  try {
+    return await window.canister.flowchain.get_supplier_bids(CompanyId);
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return [];
+  }
+}
+
 //driver can be  paid arnd 10% of cost
 export async function payDriver(order,amount) {
   const chainflowCanister = window.canister.chainflow;

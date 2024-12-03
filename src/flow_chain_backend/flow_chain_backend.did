@@ -253,6 +253,12 @@ type Warehouse = record {
   capacity : nat64;
   location : text;
 };
+type WarehouseAddItemPayload = record {
+  quantity : nat64;
+  warehouse_id : nat64;
+  item_id : nat64;
+  shelf_location : text;
+};
 type WarehouseInventory = record {
   last_updated : text;
   quantity : nat64;
@@ -268,7 +274,7 @@ service : {
   add_affiliation : (nat64, text) -> (Result);
   add_driver_to_supply_company : (nat64, nat64) -> (Result_1);
   add_item_to_order : (nat64, OrderItem) -> (Result_2);
-  add_item_to_warehouse : (nat64, nat64, nat64, text) -> (Result_3);
+  add_item_to_warehouse : (WarehouseAddItemPayload) -> (Result_3);
   add_product : (nat64, text) -> (Result);
   approve_bid : (nat64) -> (Result_4);
   assign_driver : (nat64, nat64) -> (Result_2);
@@ -290,6 +296,9 @@ service : {
   get_all_maintainance_records : () -> (vec MaintainanceRecord) query;
   get_all_orders : () -> (vec Order) query;
   get_all_suppliers : () -> (vec Supplier) query;
+  get_all_warehouse_inventory : (nat64) -> (
+      vec record { Warehouse; vec record { ItemDetails; nat64; text } },
+    ) query;
   get_bid : (nat64) -> (Result_5) query;
   get_client : (nat64) -> (Result) query;
   get_client_active_orders : (nat64) -> (vec Order) query;

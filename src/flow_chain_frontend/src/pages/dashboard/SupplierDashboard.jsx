@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import SalesOverview from "../../components/dashboard/SalesOverview";
@@ -6,14 +6,15 @@ import RecentOrdersList from "../../components/dashboard/RecentOrdersList";
 import ProductsTable from "../../components/dashboard/ProductsTable";
 import PopularCategories from "../../components/dashboard/PopularCategories";
 import OrdersStatus from "../../components/dashboard/OrdersStatus";
-
 import {
-  getNewOrders,
-  getSupplyCompanyActiveOrders,
-  getSupplyCompanyCompletedOrders,
-  getSupplyCompanyNewOrders,
-  payDriver,
-} from "../../utils/supplyCompany";
+  fetchNewOrderListings,
+  fetchNewOrders,
+  fetchCompletedOrders,
+  fetchCurrentOrders,
+  fetchSupplierBids,
+  fetchAllWarehouseInventory,
+  payDriverFunc,
+} from "./utils/supplierUtils";
 
 export default function SupplierDashboard() {
   const [searchBarValue32, setSearchBarValue32] = useState("");
@@ -22,92 +23,27 @@ export default function SupplierDashboard() {
   const [completedOrders, setCompletedOrders] = useState([]);
   const [currentOrders, setCurrentOrders] = useState([]);
   const [newOrders, setNewOrders] = useState([]);
+  const [allWarehouseInventory, setAllWarehouseInventory] = useState([]);
+  const [bids, setBids] = useState([]);
   const [tab, setTab] = useState("new");
 
-  const { id } = 0;
+  const id = 0;
 
-  // fetch new order listings
-  const fetchNewOrderListings = useCallback(async () => {
-    try {
-      setLoading(true);
-      const orders = await getNewOrders();
-      setOrderListings(orders);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  });
-
-  const fetchNewOrders = useCallback(async () => {
-    try {
-      setLoading(true);
-      const orders = await getSupplyCompanyNewOrders(id);
-      console.log("new orders", orders);
-      setNewOrders(orders);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  });
-
-  const fetchCompletedOrders = useCallback(async () => {
-    try {
-      setLoading(true);
-      const orders = await getSupplyCompanyCompletedOrders(id);
-      setCompletedOrders(orders);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  });
-
-  const fetchCurrentOrders = useCallback(async () => {
-    try {
-      setLoading(true);
-      const orders = await getSupplyCompanyActiveOrders(id);
-      setCurrentOrders(orders);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  });
-
-  // pay driver
-  const payDriverFunc = async (data) => {
-    const { orderId } = data;
-    const amount = parseInt(data.amount, 10) * 10 ** 8;
-
-    try {
-      setLoading(true);
-      await payDriver({ orderId }, amount).then((resp) => {
-        console.log("resp", resp);
-        fetchCompletedOrders();
-        toast(<NotificationSuccess text="Driver paid successfully." />);
-      });
-      toast(<NotificationSuccess text="Driver paid successfully." />);
-    } catch (error) {
-      console.log(error);
-      toast(<NotificationError text="Failed to pay driver." />);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // useEffect(() => {
-  //   fetchNewOrders();
-  //   fetchCompletedOrders();
-  //   fetchCurrentOrders();
-  //   fetchNewOrderListings();
-  // }, []);
+  useEffect(() => {
+    fetchNewOrders(setNewOrders, setLoading, id);
+    fetchCompletedOrders(setCompletedOrders, setLoading, id);
+    fetchCurrentOrders(setCurrentOrders, setLoading, id);
+    fetchNewOrderListings(setOrderListings, setLoading);
+    fetchSupplierBids(setBids, setLoading, id);
+    fetchAllWarehouseInventory(setAllWarehouseInventory, setLoading, id);
+  }, []);
 
   console.log("newOrders", newOrders);
   console.log("completedOrders", completedOrders);
   console.log("currentOrders", currentOrders);
   console.log("orderListings", orderListings);
+  console.log("bids", bids);
+  console.log("allWarehouseInventory", allWarehouseInventory);
 
   const salesData = [
     { date: "SEP 1", value: 200000 },
@@ -218,7 +154,7 @@ export default function SupplierDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <PopularCategories />
-          <OrdersStatus />
+          <OrdersStatus orders={currentOrders} bids={bids} />
         </div>
 
         <div className="mt-8 text-center text-sm text-gray-500">
