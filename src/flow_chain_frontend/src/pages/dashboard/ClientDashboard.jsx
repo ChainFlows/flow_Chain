@@ -3,7 +3,7 @@ import DashboardLayout from '../../components/dashboard/DashboardLayout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link2, FileText, Package, MoreHorizontal, ChevronDown } from 'lucide-react';
 
-export default function AdminDashboard() {
+export default function ClientDashboard() {
   const operations = [
     {
       icon: <Link2 className="w-5 h-5 text-blue-900" />,

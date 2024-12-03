@@ -5,7 +5,7 @@ import Login from "./Login";
 import { getSupplyCompanyByOwner } from "../../utils/supplyCompany";
 // import { Loader } from "../../components/utils";
 import ActivateSupplierAccount from "./ActivateSupplierAccount";
-import CompanyOverviewPage from "./CompanyOverview";
+import SupplierDashboard from "./SupplierDashboard";
 
 const Supplier = () => {
   const [supplier, setSupplier] = useState({});
@@ -42,7 +42,7 @@ const Supplier = () => {
         !loading ? (
           supplier?.name ? (
             <main>
-              <CompanyOverviewPage supplier={supplier} />
+              <SupplierDashboard supplier={supplier} />
             </main>
           ) : (
             <ActivateSupplierAccount fetchSupplier={fetchSupplier} />
