@@ -1434,6 +1434,7 @@ fn create_item(payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
         manufacturer: payload.manufacturer,
         sku: payload.sku,
         status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
+        client_id: payload.client_id,
         supplier_id: payload.supplier_id,
         created_at: formatted_time.clone(),
         updated_at: formatted_time,
@@ -1464,6 +1465,7 @@ fn update_item(id: u64, payload: ItemDetailsPayload) -> Result<ItemDetails, Stri
                 manufacturer: payload.manufacturer,
                 sku: payload.sku,
                 status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
+                client_id: payload.client_id,
                 supplier_id: payload.supplier_id,
                 created_at: existing_item.created_at.clone(),
                 updated_at: format!("{}", ic_cdk::api::time()),
@@ -1498,6 +1500,7 @@ fn list_items() -> Vec<ItemDetails> {
             .collect()
     })
 }
+
 
 // Function to delete an item
 #[ic_cdk::update]
