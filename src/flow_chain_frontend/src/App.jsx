@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
-import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import AdminDashboard from "./pages/dashboard/ClientDashboard";
 import SupplierDashboard from "./pages/dashboard/SupplierDashboard";
 import DriverDashboard from "./pages/dashboard/DriverDashboard";
 import FieldWorkerDashboard from "./pages/dashboard/FieldWorkerDashboard";

@@ -1,37 +1,34 @@
 import React, { useEffect, useState, useCallback } from "react";
-// import { login } from "../../utils/auth";
-// import { Notification } from "../../components/utils/Notifications";
-// import Login from "./Login";
-// import { getClientCompanyByOwner } from "../../utils/clientCompany";
-// import { Loader } from "../../components/utils";
-// import ActivateClientAccount from "./ActivateClientAccount";
-// import CompanyOverviewPage from "./CompanyOverview";
 
 // import {flow_chain_backend} from "../../../../declarations/flow_chain_backend";
-import AdminDashboard from "../dashboard/AdminDashboard";
+import ClientDashboard from "../dashboard/ClientDashboard";
+import Login from "./Login";
+import { useAuth } from "../../utils/auth";
+import ActivateClientAccount from "./ActivateClientAccount";
+import { getClientCompanyByOwner } from "../../utils/clientCompany";
 
 const Client = () => {
   const [client, setClient] = useState({});
   const [loading, setLoading] = useState(false);
+  const { loginWithII, loginWithNFID, walletAddress, isAuthenticated } =
+  useAuth();
 
-  // const isAuthenticated = window.auth.isAuthenticated;
-
-  // const fetchClient = useCallback(async () => {
-  //   try {
-  //     setLoading(true);
-  //     setClient(
-  //       await flow_chain_backend.get_client_by_owner()
-  //         .then(async (res) => {
-  //         console.log(res);
-  //         return res.Ok;
-  //       })
-  //     );
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //     setLoading(false);
-  //   }
-  // });
+  
+  const fetchClient = useCallback(async () => {
+    try {
+      setLoading(true);
+      setClient(
+        await getClientCompanyByOwner().then(async (res) => {
+          console.log("res", res);
+          return res.Ok;
+        })
+      );
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  });
 
   console.log("client", client);
 
@@ -40,24 +37,25 @@ const Client = () => {
   }, []);
 
   return (
-    <>
-      {/* <Notification />
+
+      <>
+      {/* <Notification /> */}
       {isAuthenticated ? (
         !loading ? (
           client?.name ? (
-              <AdminDashboard />
+            <main>
+              <ClientDashboard client={client} />
+            </main>
           ) : (
-            <ActivateClientAccount
-              fetchClient={fetchClient}
-            />
+            <ActivateClientAccount fetchClient={fetchClient} />
           )
         ) : (
-          <Loader />
+          // <Loader />
+          <div>Loading</div>
         )
       ) : (
-        <Login login={login} />
-      )} */}
-      <h1>Paragrapgh written</h1>
+        <Login login={loginWithII} />
+      )}
     </>
   );
 };
