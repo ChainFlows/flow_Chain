@@ -1,9 +1,92 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import DashboardLayout from '../../components/dashboard/DashboardLayout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link2, FileText, Package, MoreHorizontal, ChevronDown } from 'lucide-react';
+import AddOrder from '../order/AddOrder';
+import { createOrderDetails } from '../../utils/orders';
+import { getClientCompanyNewOrders } from '../../utils/clientCompany';
+import AddItem from '../item/AddItem';
+import { createItem, getAllItems } from '../../utils/items';
 
-export default function ClientDashboard() {
+export default function ClientDashboard({client, fetchClient}) {
+
+  const [loading, setLoading] = React.useState(false);
+  const [newOrders, setNewOrders] = React.useState([]);
+  const [items, setItems] = React.useState([]);
+
+  const { id } = client;
+  console.log("client2", client);
+
+  // save item
+  const saveItem = async (data) => {
+    try {
+      setLoading(true);
+      const supplierIdStr = data.supplier_id;
+      data.supplier_id = parseInt(supplierIdStr, 10);
+      createItem(data).then((resp) => {
+        console.log(resp);
+        // toast(<NotificationSuccess text="Item added successfully." />);
+      });
+    } catch (error) {
+      console.log({ error });
+      // toast(<NotificationError text="Failed to create a item." />);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch Items
+  const fetchItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      setItems(await getAllItems());
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  });
+  console.log("items", items);
+
+  // save order
+  const saveOrder = async (data) => {
+    try {
+      setLoading(true);
+
+      data.company_id = id;
+
+      createOrderDetails(data).then((resp) => {
+        console.log(resp);
+        console.log(data);
+        fetchNewOrders();
+        // toast(<NotificationSuccess text="Order added successfully." />);
+      });
+    } catch (error) {
+      console.log({ error });
+      // toast(<NotificationError text="Failed to create a order." />);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+    // get new orders
+    const fetchNewOrders = useCallback(async () => {
+      try {
+        setLoading(true);
+        setNewOrders(await getClientCompanyNewOrders(client.id));
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+      }
+    });
+
+    useEffect(() => {
+      // fetchNewOrders();
+      fetchItems();
+      // fetchClient();
+    }, []);
   const operations = [
     {
       icon: <Link2 className="w-5 h-5 text-blue-900" />,
@@ -54,9 +137,8 @@ export default function ClientDashboard() {
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <p className="text-gray-500">March 24, 2026</p>
           </div>
-          <button className="px-4 py-2 bg-[#004AAD] text-white rounded-lg flex items-center gap-2">
-            + Create report
-          </button>
+          <AddItem save={saveItem} />
+          {/* <AddOrder save={saveOrder} /> */}
         </div>
 
         {/* Operations Cards */}

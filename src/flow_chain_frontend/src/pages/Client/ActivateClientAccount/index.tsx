@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
+import { createClientCompany } from '../../../utils/clientCompany';
 
-export default function ClientRegistrationForm() {
+export default function ClientRegistrationForm({fetchClient}) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    companyName: '',
-    businessType: '',
+    name: '',
+    bussiness_type: '',
     industry: '',
     address: '',
     email: '',
     phone: '',
     website: '',
-    ownerName: '',
-    regNumber: '',
+    owner_name: '',
+    reg_no: '',
     logo: ''
   });
 
@@ -30,10 +31,22 @@ export default function ClientRegistrationForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      navigate('/dashboard/client');
+
+      try {
+        // Save client data to the backend
+        await createClientCompany(formData).then((response) => {
+          fetchClient();
+          console.log("response", response);
+        } );
+        console.log(formData);
+      }
+      catch (error) {
+        console.error(error);
+      }
+      // navigate('/dashboard/client');
     }
   };
 
@@ -76,15 +89,15 @@ export default function ClientRegistrationForm() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { name: 'companyName', label: 'Client Company Name', type: 'text' },
-              { name: 'businessType', label: 'Business Type', type: 'text' },
+              { name: 'name', label: 'Client Company Name', type: 'text' },
+              { name: 'bussiness_type', label: 'Business Type', type: 'text' },
               { name: 'industry', label: 'Industry', type: 'text' },
               { name: 'address', label: 'Client Company Address', type: 'text' },
               { name: 'email', label: 'Client Company Email Address', type: 'email' },
               { name: 'phone', label: 'Client Phone Number', type: 'tel' },
               { name: 'website', label: 'Client Website', type: 'url' },
-              { name: 'ownerName', label: 'Owner Name', type: 'text' },
-              { name: 'regNumber', label: 'Registration Number', type: 'text' },
+              { name: 'owner_name', label: 'Owner Name', type: 'text' },
+              { name: 'reg_no', label: 'Registration Number', type: 'text' },
               { name: 'logo', label: 'Client Company Logo URL', type: 'url' }
             ].map((field) => (
               <div key={field.name}>

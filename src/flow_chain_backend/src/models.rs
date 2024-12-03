@@ -95,6 +95,7 @@ pub struct ItemDetails {
     pub(crate) manufacturer: String,
     pub(crate) sku: String,  // Stock Keeping Unit
     pub(crate) status: String, // e.g., "In Stock", "Out of Stock"
+    pub(crate) client_id: Option<u64>,
     pub(crate) supplier_id: Option<u64>,
     pub(crate) created_at: String,
     pub(crate) updated_at: String,
@@ -111,6 +112,7 @@ pub struct ItemDetailsPayload {
     pub(crate) dimensions: String,
     pub(crate) manufacturer: String,
     pub(crate) sku: String,
+    pub(crate) client_id: Option<u64>,
     pub(crate) supplier_id: Option<u64>,
 }
 

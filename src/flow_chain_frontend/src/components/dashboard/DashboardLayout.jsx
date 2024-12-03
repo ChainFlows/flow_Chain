@@ -17,14 +17,14 @@ export default function DashboardLayout({ children }) {
   const location = useLocation();
 
   const menuItems = [
-    { icon: BarChart2, label: 'Dashboard', path: '/dashboard/admin' },
-    { icon: FileText, label: 'Reports', path: '/reports' },
-    { icon: Package, label: 'Products', path: '/products' },
-    { icon: Truck, label: 'Delivery', path: '/delivery' },
-    { icon: Users, label: 'Users', path: '/users' },
-    { icon: Link2, label: 'Integrations', path: '/integrations' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
-    { icon: Grid, label: 'Design pages', path: '/design' },
+    { icon: BarChart2, label: 'Dashboard', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: FileText, label: 'Reports', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Package, label: 'Products', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Truck, label: 'Delivery', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Users, label: 'Users', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Link2, label: 'Integrations', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Settings, label: 'Settings', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Grid, label: 'Design pages', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
   ];
 
   return (
@@ -32,9 +32,9 @@ export default function DashboardLayout({ children }) {
       {/* Sidebar - Added sticky positioning */}
       <div className="w-64 bg-white border-r flex flex-col sticky top-0 h-screen">
         <div className="p-4 border-b">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai" className="flex items-center gap-2">
             <Box className="w-6 h-6 text-blue-900" />
-            <span className="font-semibold">ChainFlow</span>
+            <span className="font-semibold">FlowChain</span>
           </Link>
         </div>
 

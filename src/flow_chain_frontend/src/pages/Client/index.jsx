@@ -30,7 +30,7 @@ const Client = () => {
     }
   });
 
-  console.log("client", client);
+  console.log("client1", client);
 
   useEffect(() => {
     fetchClient();
@@ -44,7 +44,7 @@ const Client = () => {
         !loading ? (
           client?.name ? (
             <main>
-              <ClientDashboard client={client} />
+              <ClientDashboard client={client} fetchClient={fetchClient} />
             </main>
           ) : (
             <ActivateClientAccount fetchClient={fetchClient} />
