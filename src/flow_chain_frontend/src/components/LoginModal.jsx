@@ -15,7 +15,7 @@ export default function LoginModal({ isOpen, onClose }) {
     if (selectedRole) {
       switch (selectedRole) {
         case 'Supplier':
-          navigate('/supplier-registration');
+          navigate('/clients');
           break;
         case 'Driver':
           navigate('/driver-registration');

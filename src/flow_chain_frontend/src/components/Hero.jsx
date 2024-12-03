@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import GetInTouchModal from './GetInTouchModal';
+import { Img } from "../components/Img";
+import * as Images from "../assets/images";
 
 export default function Hero() {
   const [isGetInTouchOpen, setIsGetInTouchOpen] = useState(false);
@@ -37,8 +39,8 @@ export default function Hero() {
           </div>
 
           <div className="w-full md:w-1/2 relative">
-            <img
-              src="/container-image.png"
+            <Img
+              src={Images.containerImg}
               alt="Flowchain Container"
               className="w-full h-auto rounded-lg"
             />
