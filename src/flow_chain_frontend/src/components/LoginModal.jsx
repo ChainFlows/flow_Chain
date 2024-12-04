@@ -19,7 +19,7 @@ export default function LoginModal({ isOpen, onClose }) {
           break;
         case 'Driver':
           navigate(
-            "/driver-registration?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai"
+            "/driver?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai"
           );
           break;
         case 'Client':

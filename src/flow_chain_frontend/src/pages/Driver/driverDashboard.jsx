@@ -2,7 +2,9 @@ import React from 'react';
 import DashboardLayout from '../../components/dashboard/DashboardLayout';
 import { Clock, AlertCircle, CheckCircle } from 'lucide-react';
 
-export default function DriverDashboard() {
+export default function DriverDashboard({ driver }) {
+  const { id, full_name, contact_info, trainings, experience, license_no, license_expiry } = driver;
+
   const currentDelivery = {
     title: 'Medical Delivery',
     stages: ['Pickup', 'In transit', 'Delivered'],
