@@ -1,61 +1,64 @@
-import React from 'react';
-import DashboardLayout from '../../components/dashboard/DashboardLayout';
-import { Clock, AlertCircle, CheckCircle } from 'lucide-react';
+import React from "react";
+import DashboardLayout from "../../components/dashboard/DashboardLayout";
+import { Clock, AlertCircle, CheckCircle } from "lucide-react";
 
 export default function DriverDashboard({ driver }) {
-  const { id, full_name, contact_info, trainings, experience, license_no, license_expiry } = driver;
+  const { id, name, logo } = driver;
+
+  const datas = { name, logo };
 
   const currentDelivery = {
-    title: 'Medical Delivery',
-    stages: ['Pickup', 'In transit', 'Delivered'],
-    currentStage: 1
+    title: "Medical Delivery",
+    stages: ["Pickup", "In transit", "Delivered"],
+    currentStage: 1,
   };
 
   const teamProgress = [
-    { name: 'John Carter', progress: 60, avatar: 'JC' },
-    { name: 'Sophie Moore', progress: 45, avatar: 'SM' },
-    { name: 'Sam Smith', progress: 85, avatar: 'SS' }
+    { name: "John Carter", progress: 60, avatar: "JC" },
+    { name: "Sophie Moore", progress: 45, avatar: "SM" },
+    { name: "Sam Smith", progress: 85, avatar: "SS" },
   ];
 
   const deliveryReports = {
-    completed: { count: 128, change: '+6.2%' },
-    incomplete: { count: 32, change: '-8.1%' },
-    late: { count: 4, change: '-3.25%' }
+    completed: { count: 128, change: "+6.2%" },
+    incomplete: { count: 32, change: "-8.1%" },
+    late: { count: 4, change: "-3.25%" },
   };
 
   const upcomingDeliveries = [
     {
-      title: 'Satellite Phones Delivery',
-      description: 'To enable communication in remote areas',
-      type: 'Aid',
-      date: 'Nov 24, 2026',
-      team: ['JC', 'SM']
+      title: "Satellite Phones Delivery",
+      description: "To enable communication in remote areas",
+      type: "Aid",
+      date: "Nov 24, 2026",
+      team: ["JC", "SM"],
     },
     {
-      title: 'Emergency Kit Distribution',
-      description: 'Supplying pre-assembled kits with flashlights',
-      type: 'Aid',
-      date: 'Oct 17, 2026',
-      team: ['SS']
+      title: "Emergency Kit Distribution",
+      description: "Supplying pre-assembled kits with flashlights",
+      type: "Aid",
+      date: "Oct 17, 2026",
+      team: ["SS"],
     },
     {
-      title: 'Wildfire Support Logistics',
-      description: 'Transporting water tankers, fire retardants',
-      type: 'Materials',
-      date: 'Nov 20, 2026',
-      team: ['JC', 'SM', 'SS']
+      title: "Wildfire Support Logistics",
+      description: "Transporting water tankers, fire retardants",
+      type: "Materials",
+      date: "Nov 20, 2026",
+      team: ["JC", "SM", "SS"],
     },
     {
-      title: 'Solar Panel Delivery',
-      description: 'Transporting and setting up solar kits for remote medical camps',
-      type: 'Design',
-      date: 'Sept 17, 2026',
-      team: ['SM', 'SS']
-    }
+      title: "Solar Panel Delivery",
+      description:
+        "Transporting and setting up solar kits for remote medical camps",
+      type: "Design",
+      date: "Sept 17, 2026",
+      team: ["SM", "SS"],
+    },
   ];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout dataClient={datas}>
       <div className="p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -79,15 +82,23 @@ export default function DriverDashboard({ driver }) {
               {currentDelivery.stages.map((stage, index) => (
                 <React.Fragment key={index}>
                   <div className="flex flex-col items-center">
-                    <div className={`w-4 h-4 rounded-full ${
-                      index <= currentDelivery.currentStage ? 'bg-green-500' : 'bg-gray-200'
-                    }`} />
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        index <= currentDelivery.currentStage
+                          ? "bg-green-500"
+                          : "bg-gray-200"
+                      }`}
+                    />
                     <span className="text-sm mt-2">{stage}</span>
                   </div>
                   {index < currentDelivery.stages.length - 1 && (
-                    <div className={`flex-1 h-1 mx-2 ${
-                      index < currentDelivery.currentStage ? 'bg-green-500' : 'bg-gray-200'
-                    }`} />
+                    <div
+                      className={`flex-1 h-1 mx-2 ${
+                        index < currentDelivery.currentStage
+                          ? "bg-green-500"
+                          : "bg-gray-200"
+                      }`}
+                    />
                   )}
                 </React.Fragment>
               ))}
@@ -112,10 +123,12 @@ export default function DriverDashboard({ driver }) {
                       {member.avatar}
                     </div>
                     <span className="text-sm font-medium">{member.name}</span>
-                    <span className="text-sm text-gray-500 ml-auto">{member.progress}%</span>
+                    <span className="text-sm text-gray-500 ml-auto">
+                      {member.progress}%
+                    </span>
                   </div>
                   <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-green-500 rounded-full"
                       style={{ width: `${member.progress}%` }}
                     />
@@ -138,25 +151,41 @@ export default function DriverDashboard({ driver }) {
                 <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-2">
                   <CheckCircle className="w-6 h-6" />
                 </div>
-                <div className="text-2xl font-bold">{deliveryReports.completed.count}</div>
-                <div className="text-sm text-gray-500">Completed Deliveries</div>
-                <div className="text-sm text-green-500">{deliveryReports.completed.change}</div>
+                <div className="text-2xl font-bold">
+                  {deliveryReports.completed.count}
+                </div>
+                <div className="text-sm text-gray-500">
+                  Completed Deliveries
+                </div>
+                <div className="text-sm text-green-500">
+                  {deliveryReports.completed.change}
+                </div>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-2">
                   <AlertCircle className="w-6 h-6" />
                 </div>
-                <div className="text-2xl font-bold">{deliveryReports.incomplete.count}</div>
-                <div className="text-sm text-gray-500">Incomplete Deliveries</div>
-                <div className="text-sm text-red-500">{deliveryReports.incomplete.change}</div>
+                <div className="text-2xl font-bold">
+                  {deliveryReports.incomplete.count}
+                </div>
+                <div className="text-sm text-gray-500">
+                  Incomplete Deliveries
+                </div>
+                <div className="text-sm text-red-500">
+                  {deliveryReports.incomplete.change}
+                </div>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mx-auto mb-2">
                   <Clock className="w-6 h-6" />
                 </div>
-                <div className="text-2xl font-bold">{deliveryReports.late.count}</div>
+                <div className="text-2xl font-bold">
+                  {deliveryReports.late.count}
+                </div>
                 <div className="text-sm text-gray-500">Late Deliveries</div>
-                <div className="text-sm text-red-500">{deliveryReports.late.change}</div>
+                <div className="text-sm text-red-500">
+                  {deliveryReports.late.change}
+                </div>
               </div>
             </div>
           </div>
@@ -174,24 +203,32 @@ export default function DriverDashboard({ driver }) {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="font-medium mb-1">{delivery.title}</h3>
-                    <p className="text-sm text-gray-500">{delivery.description}</p>
+                    <p className="text-sm text-gray-500">
+                      {delivery.description}
+                    </p>
                   </div>
                   <button className="text-gray-400">...</button>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs ${
-                      delivery.type === 'Aid' ? 'bg-blue-100 text-blue-900' :
-                      delivery.type === 'Materials' ? 'bg-orange-100 text-orange-900' :
-                      'bg-gray-100 text-gray-900'
-                    }`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs ${
+                        delivery.type === "Aid"
+                          ? "bg-blue-100 text-blue-900"
+                          : delivery.type === "Materials"
+                          ? "bg-orange-100 text-orange-900"
+                          : "bg-gray-100 text-gray-900"
+                      }`}
+                    >
                       {delivery.type}
                     </span>
-                    <span className="text-sm text-gray-500">{delivery.date}</span>
+                    <span className="text-sm text-gray-500">
+                      {delivery.date}
+                    </span>
                   </div>
                   <div className="flex -space-x-2">
                     {delivery.team.map((member, idx) => (
-                      <div 
+                      <div
                         key={idx}
                         className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm border-2 border-white"
                       >
