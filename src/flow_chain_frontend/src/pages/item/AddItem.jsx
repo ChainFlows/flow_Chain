@@ -15,7 +15,10 @@ const AddItem = ({ save }) => {
   const [dimensions, setDimensions] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [sku, setSku] = useState("");
-  // const [supplier_id, setSupplierId] = useState(5)
+ 
+
+  
+  console.log("first", typeof 0n);
   // const supplier_id = parseInt(5, 10);
   
 
@@ -136,7 +139,6 @@ const AddItem = ({ save }) => {
                 dimensions,
                 manufacturer,
                 sku,
-                supplier_id:None,
               });
               handleClose();
             }}

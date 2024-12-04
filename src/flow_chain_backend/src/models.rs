@@ -102,7 +102,7 @@ pub struct ItemDetails {
 }
 // Payload struct for creating/updating items
 #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
-pub struct ItemDetailsPayload {
+pub struct ItemDetailsClientPayload {
     pub(crate) name: String,
     pub(crate) description: String,
     pub(crate) category: String,
@@ -113,6 +113,19 @@ pub struct ItemDetailsPayload {
     pub(crate) manufacturer: String,
     pub(crate) sku: String,
     pub(crate) client_id: Option<u64>,
+}
+
+#[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+pub struct ItemDetailsSupplierPayload {
+    pub(crate) name: String,
+    pub(crate) description: String,
+    pub(crate) category: String,
+    pub(crate) unit_price: u64,
+    pub(crate) quantity: u64,
+    pub(crate) weight: String,
+    pub(crate) dimensions: String,
+    pub(crate) manufacturer: String,
+    pub(crate) sku: String,
     pub(crate) supplier_id: Option<u64>,
 }
 
