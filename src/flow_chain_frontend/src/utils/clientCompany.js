@@ -129,6 +129,19 @@ export async function getClientCompanyNewOrders(client_id) {
   }
 }
 
+// getClientCompanyOrders
+export async function getClientCompanyOrders(client_id) {
+  try {
+    return await flow_chain_backend.get_client_orders(client_id);
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return [];
+  }
+}
+
 export async function addProduct(clientId, productName) {
   try {
     return await window.canister.chainflow.addProduct(clientId, productName);
