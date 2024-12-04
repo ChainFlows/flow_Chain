@@ -16,11 +16,14 @@ import {
   payDriverFunc,
   saveItem,
   saveWarehouse,
+  fetchSupplierItems,
+  saveBid,
 } from "./utils/supplierUtils";
 import SupplierOrdersTable from "../../components/tables/SupplierOrdersTable";
 import SupplierItemsTable from "../../components/tables/SupplierItemsTable";
 import CreateItemModal from "../../components/modals/client/CreateItemModal";
 import CreateWarehouseModal from "../../components/modals/supplier/CreateWarehouseModal";
+import CreateBidModal from "../../components/modals/supplier/CreateBidModal";
 
 export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
@@ -31,10 +34,14 @@ export default function SupplierDashboard({ supplier }) {
   const [newOrders, setNewOrders] = useState([]);
   const [allWarehouseInventory, setAllWarehouseInventory] = useState([]);
   const [bids, setBids] = useState([]);
+  const [items, setItems] = useState([]);
   const [tab, setTab] = useState("new");
+  const [orderId, setOrderId] = useState(0);
   const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
   const [isCreateWarehouseModalOpen, setIsCreateWarehouseModalOpen] =
     useState(false);
+  const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
+  const [update, setUpdate] = useState(false);
 
   console.log("supplier2", supplier);
   const { id, name, logo } = supplier;
@@ -47,7 +54,8 @@ export default function SupplierDashboard({ supplier }) {
     fetchNewOrderListings(setOrderListings, setLoading);
     fetchSupplierBids(setBids, setLoading, id);
     fetchAllWarehouseInventory(setAllWarehouseInventory, setLoading, id);
-  }, []);
+    fetchSupplierItems(setItems, setLoading, id);
+  }, [update]);
 
   console.log("newOrders", newOrders);
   console.log("completedOrders", completedOrders);
@@ -145,6 +153,10 @@ export default function SupplierDashboard({ supplier }) {
     saveWarehouse(data, setLoading, id);
   };
 
+  const saveBidFun = (data) => {
+    saveBid(data, setLoading, id);
+  };
+
   return (
     <DashboardLayout dataClient={datas}>
       <div className="p-8 bg-gray-50 min-h-screen">
@@ -153,19 +165,21 @@ export default function SupplierDashboard({ supplier }) {
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <p className="text-gray-500">March 24, 2026</p>
           </div>
-          <button
-            onClick={() => setIsCreateItemModalOpen(true)}
-            className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
-          >
-            Create Item
-          </button>
+          <div className="flex gap-4">
+            <button
+              onClick={() => setIsCreateItemModalOpen(true)}
+              className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+            >
+              Create Item
+            </button>
 
-          <button
-            onClick={() => setIsCreateWarehouseModalOpen(true)}
-            className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
-          >
-            Create Warehouse
-          </button>
+            <button
+              onClick={() => setIsCreateWarehouseModalOpen(true)}
+              className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+            >
+              Create Warehouse
+            </button>
+          </div>
           {/* <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl text-sm border border-gray-200">
             Last 30 days <ChevronDown className="w-4 h-4" />
           </button> */}
@@ -187,6 +201,10 @@ export default function SupplierDashboard({ supplier }) {
               newOrders: newOrders,
               orderListings: orderListings,
             }}
+            supplier_id={id}
+            setUpdate={setUpdate}
+            // bidModal={setIsCreateBidModalOpen}
+            // setOrderId={setOrderId}
           />
         </div>
         {/* <div>
@@ -194,7 +212,7 @@ export default function SupplierDashboard({ supplier }) {
         </div> */}
 
         <div className="mt-6">
-          <ProductsTable products={products} />
+          <ProductsTable products={items} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -214,6 +232,12 @@ export default function SupplierDashboard({ supplier }) {
           save={saveWarehouseFun}
           isOpen={isCreateWarehouseModalOpen}
           onClose={() => setIsCreateWarehouseModalOpen(false)}
+        />
+        <CreateBidModal
+          orderId={orderId}
+          save={saveBidFun}
+          isOpen={isCreateBidModalOpen}
+          onClose={() => setIsCreateBidModalOpen(false)}
         />
       </div>
     </DashboardLayout>
