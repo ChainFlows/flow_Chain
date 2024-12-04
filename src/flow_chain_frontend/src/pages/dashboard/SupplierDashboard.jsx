@@ -16,7 +16,7 @@ import {
   payDriverFunc,
 } from "./utils/supplierUtils";
 
-export default function SupplierDashboard() {
+export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
   const [loading, setLoading] = useState(false);
   const [orderListings, setOrderListings] = useState([]);
@@ -27,7 +27,9 @@ export default function SupplierDashboard() {
   const [bids, setBids] = useState([]);
   const [tab, setTab] = useState("new");
 
-  const id = 0;
+  console.log("supplier2", supplier);
+  const { id, name, logo } = supplier;
+  const datas = { name, logo };
 
   useEffect(() => {
     fetchNewOrders(setNewOrders, setLoading, id);
@@ -127,7 +129,7 @@ export default function SupplierDashboard() {
   ];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout dataClient={datas}>
       <div className="p-8 bg-gray-50 min-h-screen">
         <div className="flex justify-between items-center mb-8">
           <div>

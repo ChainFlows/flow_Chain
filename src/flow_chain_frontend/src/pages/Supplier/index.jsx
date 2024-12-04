@@ -5,7 +5,7 @@ import Login from "./Login";
 import { getSupplyCompanyByOwner } from "../../utils/supplyCompany";
 // import { Loader } from "../../components/utils";
 import ActivateSupplierAccount from "./ActivateSupplierAccount";
-import SupplierDashboard from "./SupplierDashboard";
+import SupplierDashboard from "../dashboard/SupplierDashboard";
 
 const Supplier = () => {
   const [supplier, setSupplier] = useState({});
@@ -30,6 +30,7 @@ const Supplier = () => {
   });
 
   console.log("supplier", supplier);
+  console.log("supplier2 auth", isAuthenticated);
 
   useEffect(() => {
     fetchSupplier();
