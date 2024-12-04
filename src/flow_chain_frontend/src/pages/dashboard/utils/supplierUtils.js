@@ -1,5 +1,6 @@
 // supplierDashboardFunctions.js
 import {
+  createItem,
   getNewOrders,
   getSupplyCompanyActiveOrders,
   getSupplyCompanyBids,
@@ -7,7 +8,10 @@ import {
   getSupplyCompanyNewOrders,
   payDriver as payDriverAPI,
 } from "../../../utils/supplyCompany";
-import { getAllWarehouseInventory } from "../../../utils/warehouse";
+import {
+  createWarehouse,
+  getAllWarehouseInventory,
+} from "../../../utils/warehouse";
 
 export const fetchNewOrderListings = async (setOrderListings, setLoading) => {
   try {
@@ -101,6 +105,49 @@ export const payDriverFunc = async (data, fetchCompletedOrders, setLoading) => {
   } catch (error) {
     console.error(error);
     // toast(<NotificationError text="Failed to pay driver." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const saveItem = async (data, setLoading, id) => {
+  try {
+    setLoading(true);
+    const PriceStr = data.unit_price;
+    const QuantityStr = data.quantity;
+    data.unit_price = BigInt(PriceStr);
+    data.quantity = BigInt(QuantityStr);
+
+    data.supplier_id = [id];
+
+    console.log("item pay", data);
+    await createItem(data).then((resp) => {
+      console.log("item created", resp);
+    });
+    // const items = await getAllItemsByClient();
+    // setItems(items);
+    // toast(<NotificationSuccess text="Item saved successfully." />);
+  } catch (error) {
+    console.error("Failed to save item", error);
+    // toast(<NotificationError text="Failed to save item." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const saveWarehouse = async (data, setLoading, id) => {
+  try {
+    setLoading(true);
+    const capacityStr = data.capacity;
+    data.capacity = BigInt(capacityStr);
+
+    data.supplier_id = id;
+
+    await createWarehouse(data).then((resp) => {
+      console.log("warehouse created", resp);
+    });
+  } catch (error) {
+    console.error(error);
   } finally {
     setLoading(false);
   }

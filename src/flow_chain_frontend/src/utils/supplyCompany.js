@@ -2,7 +2,7 @@ import { Principal } from "@dfinity/principal";
 import { transferICP } from "./ledger";
 
 export async function createSupplyCompany(supplyCompany) {
-  return window.canister.flowchain.create_supplier_company(supplyCompany);
+  return await window.canister.flowchain.create_supplier_company(supplyCompany);
 }
 
 export async function getAllSupplyCompanies() {
@@ -31,7 +31,7 @@ export async function getSupplyCompany(id) {
 
 // getSupplyCompanyByOwner
 export async function getSupplyCompanyByOwner() {
-  console.log("called spo")
+  console.log("called spo");
   try {
     return await window.canister.flowchain.get_supplier_by_owner();
   } catch (err) {
@@ -150,12 +150,19 @@ export async function getSupplyCompanyBids(CompanyId) {
   }
 }
 
+export async function createItem(item_payload) {
+  return window.canister.flowchain.create_item_as_supplier(item_payload);
+}
+
 //driver can be  paid arnd 10% of cost
-export async function payDriver(order,amount) {
+export async function payDriver(order, amount) {
   const chainflowCanister = window.canister.chainflow;
   console.log("my Order", order);
   console.log("first", order.orderId);
-  const orderResponse = await chainflowCanister.createReserveDriverPay(order.orderId,amount);
+  const orderResponse = await chainflowCanister.createReserveDriverPay(
+    order.orderId,
+    amount
+  );
   console.log("orderResponse", orderResponse);
   const driverPrincipal = Principal.from(orderResponse.Ok.driverReciever);
   const driverAddress = await chainflowCanister.getAddressFromPrincipal(
@@ -174,4 +181,3 @@ export async function payDriver(order,amount) {
     orderResponse.Ok.memo
   );
 }
-

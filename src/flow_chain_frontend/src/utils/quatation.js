@@ -1,3 +1,5 @@
+import { flow_chain_backend } from "../../../declarations/flow_chain_backend";
+
 export async function createQuotation(quotationPayload) {
   try {
     console.log("utils", quotationPayload);
@@ -53,7 +55,7 @@ export async function sortQuotationsByCompanyName(companyId) {
 // getOrderQuotations
 export async function getOrderQuotations(orderId) {
   try {
-    return await window.canister.chainflow.getOrderQuotations(orderId);
+    return await flow_chain_backend.get_order_quotation(orderId);
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;

@@ -13,18 +13,18 @@ import {
 } from 'lucide-react';
 import DashboardHeader from './DashboardHeader';
 
-export default function DashboardLayout({ children }) {
-  const location = useLocation();
+export default function DashboardLayout({dataClient, children }) {
+  // const location = useLocation();
 
   const menuItems = [
-    { icon: BarChart2, label: 'Dashboard', path: '/dashboard/admin' },
-    { icon: FileText, label: 'Reports', path: '/reports' },
-    { icon: Package, label: 'Products', path: '/products' },
-    { icon: Truck, label: 'Delivery', path: '/delivery' },
-    { icon: Users, label: 'Users', path: '/users' },
-    { icon: Link2, label: 'Integrations', path: '/integrations' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
-    { icon: Grid, label: 'Design pages', path: '/design' },
+    { icon: BarChart2, label: 'Dashboard', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: FileText, label: 'Reports', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Package, label: 'Products', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Truck, label: 'Delivery', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Users, label: 'Users', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Link2, label: 'Integrations', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Settings, label: 'Settings', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Grid, label: 'Design pages', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
   ];
 
   return (
@@ -32,9 +32,9 @@ export default function DashboardLayout({ children }) {
       {/* Sidebar - Added sticky positioning */}
       <div className="w-64 bg-white border-r flex flex-col sticky top-0 h-screen">
         <div className="p-4 border-b">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai" className="flex items-center gap-2">
             <Box className="w-6 h-6 text-blue-900" />
-            <span className="font-semibold">ChainFlow</span>
+            <span className="font-semibold">FlowChain</span>
           </Link>
         </div>
 
@@ -61,14 +61,14 @@ export default function DashboardLayout({ children }) {
 
         <div className="p-4 mt-auto">
           <button className="w-full px-4 py-2 bg-blue-900 text-white rounded-lg flex items-center justify-center gap-2">
-            Get design →
+            {/* Get design → */}
           </button>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <DashboardHeader />
+        <DashboardHeader dataClient={dataClient} />
         <main className="flex-1 overflow-auto bg-gray-50">{children}</main>
       </div>
     </div>

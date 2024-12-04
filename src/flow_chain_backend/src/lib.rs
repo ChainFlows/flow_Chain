@@ -8,8 +8,8 @@ use ic_stable_structures::{BoundedStorable, Cell, DefaultMemoryImpl, StableBTree
 // use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::cell::RefCell;
-use std::collections::BTreeMap;
-use validator::Validate;
+// use std::collections::BTreeMap;
+// use validator::Validate;
 
 mod models; // Import the models module
 
@@ -424,6 +424,24 @@ fn get_client_completed_orders(client_id: u64) -> Vec<Order> {
     })
 }
 
+// function to get client company orders
+#[ic_cdk::query]
+fn get_client_orders(client_id: u64) -> Vec<Order> {
+    ORDERS.with(|orders| {
+        orders
+            .borrow()
+            .iter()
+            .filter_map(|(_, order)| {
+                if order.company_id == client_id {
+                    Some(order.clone())
+                } else {
+                    None
+                }
+            })
+            .collect()
+    })
+}
+
 
 
 //Function to get Client Company New Orders
@@ -434,7 +452,10 @@ fn get_client_new_orders(client_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
+                println!("Order: {:?}", order);
+                println!("Client ID: {:?}", client_id);
                 if order.company_id == client_id && order.supplier_id == None {
+
                     Some(order.clone())
                 } else {
                     None
@@ -1139,6 +1160,51 @@ fn create_bid(payload: BidPayload) -> Result<Bid, String> {
         Ok(bid)
     })
 }
+// create quotation
+#[ic_cdk::update]
+fn create_quotation(payload: QuotationPayload) -> Result<Quotation, String> {
+    let caller = ic_cdk::caller();
+    
+    // Verify the order exists and is open for bidding
+    let order = ORDERS.with(|orders| {
+        orders.borrow().get(&payload.order_id).clone()
+    }).ok_or("Order not found")?;
+
+    if order.supplier_id.is_none() {
+        return Err("This order does not have an assigned supplier".to_string());
+    }
+
+    // Get supplier details
+    let supplier = SUPPLIERS.with(|suppliers| {
+        suppliers.borrow()
+            .iter()
+            .find(|(_, s)| s.owner.to_text() == caller.to_text())
+            .map(|(_, s)| s.clone())
+    }).ok_or("Only registered suppliers can bid")?;
+
+    
+    let quotation = Quotation {
+        id: generate_uuid(),
+        quotation_title: payload.quotation_title,
+        supplier_id: supplier.id,
+        order_id: payload.order_id,
+        supplier_name: supplier.name,
+        supplier_address: supplier.address,
+        supplier_email: supplier.email,
+        service_description: payload.service_description,
+        shipping_cost: payload.shipping_cost,
+        quotation_status: "Pending".to_string(),
+    };
+
+       
+
+    // Save the quotation
+    QUOTATIONS.with(|quotations| {
+        quotations.borrow_mut().insert(quotation.id, quotation.clone());
+        Ok(quotation)
+    })
+}
+
 
 #[ic_cdk::query]
 fn get_order_bids(order_id: u64) -> Vec<Bid> {
@@ -1417,8 +1483,11 @@ fn assign_driver(order_id: u64, driver_id: u64) -> Result<Order, String> {
 }
 
 // Function to create a new item
+
+
+// Fn creat Item as a Client make supplier_id None
 #[ic_cdk::update]
-fn create_item(payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
+fn create_item_as_client(payload: ItemDetailsClientPayload) -> Result<ItemDetails, String> {
     let current_time = ic_cdk::api::time();
     let formatted_time = format!("{}", current_time);
 
@@ -1434,7 +1503,12 @@ fn create_item(payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
         manufacturer: payload.manufacturer,
         sku: payload.sku,
         status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
-        supplier_id: payload.supplier_id,
+        client_id: match payload.client_id {
+            Some(id) => Some(id),
+            None => None,
+        }
+        ,
+        supplier_id: None,
         created_at: formatted_time.clone(),
         updated_at: formatted_time,
     };
@@ -1445,9 +1519,44 @@ fn create_item(payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
     })
 }
 
+// create item as supplier
+#[ic_cdk::update]
+fn create_item_as_supplier(payload: ItemDetailsSupplierPayload) -> Result<ItemDetails, String> {
+    // Verify if the supplier exists
+    let current_time = ic_cdk::api::time();
+    let formatted_time = format!("{}", current_time);
+
+    let item = ItemDetails {
+        id: generate_uuid(),
+        name: payload.name,
+        description: payload.description,
+        category: payload.category,
+        unit_price: payload.unit_price,
+        quantity: payload.quantity,
+        weight: payload.weight,
+        dimensions: payload.dimensions,
+        manufacturer: payload.manufacturer,
+        sku: payload.sku,
+        status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
+        client_id: None,
+        supplier_id: match payload.supplier_id {
+            Some(id) => Some(id),
+            None => None,
+        },
+        created_at: formatted_time.clone(),
+        updated_at: formatted_time,
+    };
+
+    ITEMS.with(|items| {
+        items.borrow_mut().insert(item.id, item.clone());
+        Ok(item)
+    })
+}
+
+
 // Function to update an item
 #[ic_cdk::update]
-fn update_item(id: u64, payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
+fn update_item_as_client(id: u64, payload: ItemDetailsClientPayload) -> Result<ItemDetails, String> {
     ITEMS.with(|items| {
         let mut items = items.borrow_mut();
         
@@ -1464,7 +1573,8 @@ fn update_item(id: u64, payload: ItemDetailsPayload) -> Result<ItemDetails, Stri
                 manufacturer: payload.manufacturer,
                 sku: payload.sku,
                 status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
-                supplier_id: payload.supplier_id,
+                client_id: payload.client_id,
+                supplier_id: None,
                 created_at: existing_item.created_at.clone(),
                 updated_at: format!("{}", ic_cdk::api::time()),
             };
@@ -1499,6 +1609,27 @@ fn list_items() -> Vec<ItemDetails> {
     })
 }
 
+// Function to list all items by client
+#[ic_cdk::query]
+fn list_items_by_client(client_id: u64) -> Vec<ItemDetails> {
+    ITEMS.with(|items| {
+        items.borrow()
+            .iter()
+            .filter_map(|(_, item)| {
+                if item.client_id == Some(client_id) {
+
+                    println!("Item: {:?}", item.client_id);
+                    println!("Client ID: {:?}", client_id);
+                    Some(item.clone())
+                } else {
+                    None
+                }
+            })
+            .collect()
+    })
+}
+
+
 // Function to delete an item
 #[ic_cdk::update]
 fn delete_item(id: u64) -> Result<ItemDetails, String> {
@@ -1526,18 +1657,18 @@ fn search_items_by_category(category: String) -> Vec<ItemDetails> {
 
 // Create Warehouse
 #[ic_cdk::update]
-fn create_warehouse(supplier_id: u64, payload: WarehousePayload) -> Result<Warehouse, String> {
+fn create_warehouse(payload: WarehousePayload) -> Result<Warehouse, String> {
     // Verify if the supplier exists
 
     let supplier = SUPPLIERS.with(|suppliers| {
-        suppliers.borrow().get(&supplier_id)
+        suppliers.borrow().get(&payload.supplier_id)
     }).ok_or("Supplier not found")?;
 
     println!("Supplier: {:?}", supplier);
 
     let warehouse = Warehouse {
         id: generate_uuid(),
-        supplier_id,
+        supplier_id: payload.supplier_id,
         name: payload.name,
         location: payload.location,
         capacity: payload.capacity,
@@ -1579,7 +1710,7 @@ fn add_item_to_warehouse(
         
         if let Some(mut warehouse) = warehouses.get(&payload.warehouse_id) {
             // Check if item exists
-            let item = ITEMS.with(|items| {
+            let _item = ITEMS.with(|items| {
                 items.borrow().get(&payload.item_id)
             }).ok_or("Item not found")?;
 

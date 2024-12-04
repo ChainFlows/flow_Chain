@@ -1,13 +1,15 @@
 import { Principal } from "@dfinity/principal";
 import { transferICP } from "./ledger";
 
+import {flow_chain_backend} from "../../../declarations/flow_chain_backend";
+
 export async function createClientCompany(clientCompany) {
-  return window.canister.chainflow.createClientCompany(clientCompany);
+  return await flow_chain_backend.create_client_company(clientCompany);
 }
 
 export async function getAllClientCompanies() {
   try {
-    return await window.canister.chainflow.getAllClientCompanies();
+    return await flow_chain_backend.get_all_clients();
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;
@@ -74,7 +76,7 @@ export async function addAffiliatedCompany(clientId, companyName) {
 // getClientCompanyByOwner
 export async function getClientCompanyByOwner() {
   try {
-    return await window.canister.chainflow.getClientCompanyByOwner();
+    return await flow_chain_backend.get_client_by_owner(); 
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;
@@ -115,9 +117,22 @@ export async function getClientCompanyCompletedOrders(clientId) {
 }
 
 // getClientCompanyNewOrders
-export async function getClientCompanyNewOrders(clientId) {
+export async function getClientCompanyNewOrders(client_id) {
   try {
-    return await window.canister.chainflow.getClientCompanyNewOrders(clientId);
+    return await flow_chain_backend.get_client_new_orders(client_id);
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return [];
+  }
+}
+
+// getClientCompanyOrders
+export async function getClientCompanyOrders(client_id) {
+  try {
+    return await flow_chain_backend.get_client_orders(client_id);
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;

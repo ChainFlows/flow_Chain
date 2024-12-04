@@ -95,13 +95,28 @@ pub struct ItemDetails {
     pub(crate) manufacturer: String,
     pub(crate) sku: String,  // Stock Keeping Unit
     pub(crate) status: String, // e.g., "In Stock", "Out of Stock"
+    pub(crate) client_id: Option<u64>,
     pub(crate) supplier_id: Option<u64>,
     pub(crate) created_at: String,
     pub(crate) updated_at: String,
 }
 // Payload struct for creating/updating items
 #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
-pub struct ItemDetailsPayload {
+pub struct ItemDetailsClientPayload {
+    pub(crate) name: String,
+    pub(crate) description: String,
+    pub(crate) category: String,
+    pub(crate) unit_price: u64,
+    pub(crate) quantity: u64,
+    pub(crate) weight: String,
+    pub(crate) dimensions: String,
+    pub(crate) manufacturer: String,
+    pub(crate) sku: String,
+    pub(crate) client_id: Option<u64>,
+}
+
+#[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+pub struct ItemDetailsSupplierPayload {
     pub(crate) name: String,
     pub(crate) description: String,
     pub(crate) category: String,
@@ -341,6 +356,7 @@ pub struct WarehousePayload {
     pub(crate) name: String,
     pub(crate) location: String,
     pub(crate) capacity: u64,
+    pub(crate) supplier_id: u64,
 }
 
 // warehouse add item payload

@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X } from 'lucide-react';
-import { createClientCompany } from '../../../utils/clientCompany';
+import { createSupplyCompany } from '../../../utils/supplyCompany';
 
-export default function ClientRegistrationForm({fetchClient}) {
+export default function ActivateSupplierAccount({ fetchSupplier }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     bussiness_type: '',
-    industry: '',
+    supplyChainype: '',
     address: '',
     email: '',
     phone: '',
     website: '',
     owner_name: '',
+    supply_chain_type: '',
     reg_no: '',
     logo: ''
   });
@@ -34,19 +35,17 @@ export default function ClientRegistrationForm({fetchClient}) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-
       try {
-        // Save client data to the backend
-        await createClientCompany(formData).then((response) => {
-          fetchClient();
+        // Save supplier data to the backend
+        await createSupplyCompany(formData).then((response) => {
+          fetchSupplier();
           console.log("response", response);
-        } );
+        });
         console.log(formData);
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error);
       }
-      // navigate('/dashboard/client');
+      // navigate('/dashboard/supplier');
     }
   };
 
@@ -79,26 +78,27 @@ export default function ClientRegistrationForm({fetchClient}) {
 
         <div>
           <h2 className="text-center text-3xl font-bold text-gray-900">
-            Client Registration
+            Supplier Registration
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Please complete your profile to access the client dashboard
+            Please complete your profile to access the supplier dashboard
           </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { name: 'name', label: 'Client Company Name', type: 'text' },
+              { name: 'name', label: 'Supply Company Name', type: 'text' },
               { name: 'bussiness_type', label: 'Business Type', type: 'text' },
-              { name: 'industry', label: 'Industry', type: 'text' },
-              { name: 'address', label: 'Client Company Address', type: 'text' },
-              { name: 'email', label: 'Client Company Email Address', type: 'email' },
-              { name: 'phone', label: 'Client Phone Number', type: 'tel' },
-              { name: 'website', label: 'Client Website', type: 'url' },
-              { name: 'owner_name', label: 'Owner Name', type: 'text' },
-              { name: 'reg_no', label: 'Registration Number', type: 'text' },
-              { name: 'logo', label: 'Client Company Logo URL', type: 'url' }
+              { name: 'supplyChainype', label: 'Supply Chain Type', type: 'text' },
+              { name: 'address', label: 'Supply Company Address', type: 'text' },
+              { name: 'email', label: 'Email Address', type: 'email' },
+              { name: 'phone', label: 'Phone Number', type: 'tel' },
+              { name: 'website', label: 'Supply Company Website', type: 'url' },
+              { name: 'owner_name', label: 'Supply Company Owner Name', type: 'text' },
+              { name: 'supply_chain_type', label: 'Supply Chain Type', type: 'text' },
+              { name: 'reg_no', label: 'Supply Company Reg Number', type: 'text' },
+              { name: 'logo', label: 'Supply Logo URL', type: 'url' }
             ].map((field) => (
               <div key={field.name}>
                 <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">

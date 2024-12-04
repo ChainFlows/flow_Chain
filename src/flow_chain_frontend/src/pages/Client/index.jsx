@@ -30,7 +30,7 @@ const Client = () => {
     }
   });
 
-  console.log("client", client);
+  console.log("client1", client);
 
   useEffect(() => {
     fetchClient();
