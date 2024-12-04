@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Play } from 'lucide-react';
 import LoginModal from './LoginModal';
 import GetInTouchModal from './GetInTouchModal';
+import { Img } from "../components/Img";
+import * as Images from "../assets/images";
 
 export default function Partners() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -36,10 +38,10 @@ export default function Partners() {
             {/* Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="grid grid-cols-2 gap-4">
-                <img src="/images/truck.jpg" alt="Delivery Truck" className="rounded-2xl w-full h-full object-cover" />
-                <img src="/images/crane.jpg" alt="Port Crane" className="rounded-2xl w-full h-full object-cover" />
-                <img src="/images/forklift.jpg" alt="Forklift" className="rounded-2xl w-full h-full object-cover" />
-                <img src="/images/container.jpg" alt="Container" className="rounded-2xl w-full h-full object-cover" />
+                <Img src={Images.truck} alt="Delivery Truck" className="rounded-2xl w-full h-full object-cover" />
+                <Img src={Images.crane} alt="Port Crane" className="rounded-2xl w-full h-full object-cover" />
+                <Img src={Images.forklift} alt="Forklift" className="rounded-2xl w-full h-full object-cover" />
+                <Img src={Images.container} alt="Container" className="rounded-2xl w-full h-full object-cover" />
               </div>
 
               <div className="text-white">

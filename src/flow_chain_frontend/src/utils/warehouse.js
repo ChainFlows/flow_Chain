@@ -1,4 +1,8 @@
 import { Principal } from "@dfinity/principal";
+// create warehouse
+export async function createWarehouse(warehouse) {
+  return await window.canister.flowchain.create_warehouse(warehouse);
+}
 // get warehouse inventory
 export async function getWarehouseInventory(id) {
   try {

@@ -8,8 +8,8 @@ use ic_stable_structures::{BoundedStorable, Cell, DefaultMemoryImpl, StableBTree
 // use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::cell::RefCell;
-use std::collections::BTreeMap;
-use validator::Validate;
+// use std::collections::BTreeMap;
+// use validator::Validate;
 
 mod models; // Import the models module
 
@@ -1519,6 +1519,41 @@ fn create_item_as_client(payload: ItemDetailsClientPayload) -> Result<ItemDetail
     })
 }
 
+// create item as supplier
+#[ic_cdk::update]
+fn create_item_as_supplier(payload: ItemDetailsSupplierPayload) -> Result<ItemDetails, String> {
+    // Verify if the supplier exists
+    let current_time = ic_cdk::api::time();
+    let formatted_time = format!("{}", current_time);
+
+    let item = ItemDetails {
+        id: generate_uuid(),
+        name: payload.name,
+        description: payload.description,
+        category: payload.category,
+        unit_price: payload.unit_price,
+        quantity: payload.quantity,
+        weight: payload.weight,
+        dimensions: payload.dimensions,
+        manufacturer: payload.manufacturer,
+        sku: payload.sku,
+        status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
+        client_id: None,
+        supplier_id: match payload.supplier_id {
+            Some(id) => Some(id),
+            None => None,
+        },
+        created_at: formatted_time.clone(),
+        updated_at: formatted_time,
+    };
+
+    ITEMS.with(|items| {
+        items.borrow_mut().insert(item.id, item.clone());
+        Ok(item)
+    })
+}
+
+
 // Function to update an item
 #[ic_cdk::update]
 fn update_item_as_client(id: u64, payload: ItemDetailsClientPayload) -> Result<ItemDetails, String> {
@@ -1622,18 +1657,18 @@ fn search_items_by_category(category: String) -> Vec<ItemDetails> {
 
 // Create Warehouse
 #[ic_cdk::update]
-fn create_warehouse(supplier_id: u64, payload: WarehousePayload) -> Result<Warehouse, String> {
+fn create_warehouse(payload: WarehousePayload) -> Result<Warehouse, String> {
     // Verify if the supplier exists
 
     let supplier = SUPPLIERS.with(|suppliers| {
-        suppliers.borrow().get(&supplier_id)
+        suppliers.borrow().get(&payload.supplier_id)
     }).ok_or("Supplier not found")?;
 
     println!("Supplier: {:?}", supplier);
 
     let warehouse = Warehouse {
         id: generate_uuid(),
-        supplier_id,
+        supplier_id: payload.supplier_id,
         name: payload.name,
         location: payload.location,
         capacity: payload.capacity,
@@ -1675,7 +1710,7 @@ fn add_item_to_warehouse(
         
         if let Some(mut warehouse) = warehouses.get(&payload.warehouse_id) {
             // Check if item exists
-            let item = ITEMS.with(|items| {
+            let _item = ITEMS.with(|items| {
                 items.borrow().get(&payload.item_id)
             }).ok_or("Item not found")?;
 

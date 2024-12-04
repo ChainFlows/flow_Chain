@@ -8,20 +8,24 @@ export default function LoginModal({ isOpen, onClose }) {
 
   const roles = [
     ['Admin', 'Warehouse Manager', 'Guest'],
-    ['Field Worker', 'Supplier', 'Driver']
+    ['Client', 'Supplier', 'Driver']
   ];
 
   const handleLogin = () => {
     if (selectedRole) {
       switch (selectedRole) {
         case 'Supplier':
-          navigate('/supplier-registration');
+          navigate("/suppliers?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai");
           break;
         case 'Driver':
-          navigate('/driver-registration');
+          navigate(
+            "/driver-registration?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai"
+          );
           break;
+        case 'Client':
+          navigate("/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai");
         default:
-          const path = `/dashboard/${selectedRole.toLowerCase().replace(' ', '-')}`;
+          const path = `/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai`;
           navigate(path);
       }
       onClose();
