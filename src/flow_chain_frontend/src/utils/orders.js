@@ -86,7 +86,7 @@ export async function updateOrderStatus(id, status) {
 // assignSupplier
 export async function assignSupplier(orderId, supplierId) {
     try {
-      return await window.canister.chainflow.assignSupplier(orderId, supplierId);
+      return await flow_chain_backend.assign_supplier(orderId, supplierId);
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
