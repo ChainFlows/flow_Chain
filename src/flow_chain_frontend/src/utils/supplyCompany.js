@@ -138,9 +138,10 @@ export async function addDriver(companyId, driverId) {
   }
 }
 
-export async function getSupplyCompanyBids(CompanyId) {
+// get_supplier_drivers
+export async function getSupplierDrivers(companyId) {
   try {
-    return await window.canister.flowchain.get_supplier_bids(CompanyId);
+    return await window.canister.flowchain.get_supplier_drivers(companyId);
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;

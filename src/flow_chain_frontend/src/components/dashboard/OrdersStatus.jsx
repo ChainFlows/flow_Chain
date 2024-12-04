@@ -104,7 +104,7 @@ export default function OrdersStatus({ orders, bids }) {
       </div>
 
       <div className="space-y-6">
-        {ordersd.map((order, index) => (
+        {ordersList.map((order, index) => (
           <div key={index} className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">

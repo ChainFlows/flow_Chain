@@ -2,6 +2,7 @@ import React from 'react';
 import { Pencil, Trash } from 'lucide-react';
 
 export default function ProductsTable({ products }) {
+
   return (
     <div className="bg-white rounded-3xl p-8">
       <div className="flex justify-between items-center mb-6">
@@ -20,10 +21,10 @@ export default function ProductsTable({ products }) {
                   ID ↑
                 </div>
               </th>
-              <th className="pb-4 font-medium text-gray-500">PRODUCT ↑</th>
+              {/* <th className="pb-4 font-medium text-gray-500">PRODUCT ↑</th> */}
               <th className="pb-4 font-medium text-gray-500">CATEGORY ↑</th>
-              <th className="pb-4 font-medium text-gray-500 text-right">TOTAL SALES ↑</th>
-              <th className="pb-4 font-medium text-gray-500 text-right">SALES ↑</th>
+              <th className="pb-4 font-medium text-gray-500 text-righ">DIMENSIONS ↑</th>
+              <th className="pb-4 font-medium text-gray-500 text-righ">SKU ↑</th>
               <th className="pb-4 font-medium text-gray-500 text-center">STOCK ↑</th>
               <th className="pb-4"></th>
             </tr>
@@ -37,18 +38,18 @@ export default function ProductsTable({ products }) {
                     {product.id}
                   </div>
                 </td>
-                <td className="py-4">
+                {/* <td className="py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-gray-50 rounded-xl p-2">
                       <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
                     </div>
                     <span className="font-medium">{product.name}</span>
                   </div>
-                </td>
+                </td> */}
                 <td className="py-4 text-gray-500">{product.category}</td>
-                <td className="py-4 text-right">{product.totalSales}</td>
-                <td className="py-4 text-right">${product.sales.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
-                <td className="py-4 text-center">{product.stock}</td>
+                <td className="py-4 text-righ">{product.dimensions}</td>
+                <td className="py-4 text-righ">{product.sku}</td>
+                <td className="py-4 text-center">{product.quantity}</td>
                 <td className="py-4">
                   <div className="flex justify-end gap-2">
                     <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
