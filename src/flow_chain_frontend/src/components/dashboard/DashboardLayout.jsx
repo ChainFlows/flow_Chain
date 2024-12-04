@@ -14,17 +14,17 @@ import {
 import DashboardHeader from './DashboardHeader';
 
 export default function DashboardLayout({dataClient, children }) {
-  const location = useLocation();
+  // const location = useLocation();
 
   const menuItems = [
-    { icon: BarChart2, label: 'Dashboard', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: FileText, label: 'Reports', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Package, label: 'Products', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Truck, label: 'Delivery', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Users, label: 'Users', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Link2, label: 'Integrations', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Settings, label: 'Settings', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Grid, label: 'Design pages', path: '/dashboard/client?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: BarChart2, label: 'Dashboard', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: FileText, label: 'Reports', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Package, label: 'Products', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Truck, label: 'Delivery', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Users, label: 'Users', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Link2, label: 'Integrations', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Settings, label: 'Settings', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    { icon: Grid, label: 'Design pages', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
   ];
 
   return (
@@ -61,7 +61,7 @@ export default function DashboardLayout({dataClient, children }) {
 
         <div className="p-4 mt-auto">
           <button className="w-full px-4 py-2 bg-blue-900 text-white rounded-lg flex items-center justify-center gap-2">
-            Get design →
+            {/* Get design → */}
           </button>
         </div>
       </div>

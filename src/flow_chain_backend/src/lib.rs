@@ -424,6 +424,24 @@ fn get_client_completed_orders(client_id: u64) -> Vec<Order> {
     })
 }
 
+// function to get client company orders
+#[ic_cdk::query]
+fn get_client_orders(client_id: u64) -> Vec<Order> {
+    ORDERS.with(|orders| {
+        orders
+            .borrow()
+            .iter()
+            .filter_map(|(_, order)| {
+                if order.company_id == client_id {
+                    Some(order.clone())
+                } else {
+                    None
+                }
+            })
+            .collect()
+    })
+}
+
 
 
 //Function to get Client Company New Orders

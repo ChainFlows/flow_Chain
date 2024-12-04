@@ -88,7 +88,7 @@ export default function CreateItemModal({ isOpen, onClose, save }: CreateItemMod
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Price per Unit ($)
+                Price per Unit (ICP)
               </label>
               <input
                 type="number"

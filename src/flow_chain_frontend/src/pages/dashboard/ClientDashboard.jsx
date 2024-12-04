@@ -4,13 +4,15 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Link2, FileText, Package, MoreHorizontal, ChevronDown } from 'lucide-react';
 import AddOrder from '../order/AddOrder';
 import { createOrderDetails } from '../../utils/orders';
-import { getClientCompanyNewOrders } from '../../utils/clientCompany';
+import {  getClientCompanyOrders } from '../../utils/clientCompany';
 import AddItem from '../item/AddItem';
 import { createItem,  getAllItemsByClient } from '../../utils/items';
 import CreateItemModal from '../../components/modals/client/CreateItemModal';
 import CreateOrderModal from '../../components/modals/client/CreateOrderModal';
+import ClientOrdersTable from '../../components/tables/ClientOrdersTable';
+import ClientItemsTable from '../../components/tables/ClientItemsTable';
 
-export default function ClientDashboard({client, fetchClient}) {
+export default function ClientDashboard({client}) {
 
   const [loading, setLoading] = React.useState(false);
   const [newOrders, setNewOrders] = React.useState([]);
@@ -70,7 +72,7 @@ export default function ClientDashboard({client, fetchClient}) {
       createOrderDetails(data).then((resp) => {
         console.log(resp);
         console.log(data);
-        fetchNewOrders();
+        fetchAllOrders();
         // toast(<NotificationSuccess text="Order added successfully." />);
       });
     } catch (error) {
@@ -83,10 +85,10 @@ export default function ClientDashboard({client, fetchClient}) {
 
 
     // get new orders
-    const fetchNewOrders = useCallback(async () => {
+    const fetchAllOrders = useCallback(async () => {
       try {
         setLoading(true);
-        setNewOrders(await getClientCompanyNewOrders(client.id));
+        setNewOrders(await getClientCompanyOrders(client.id));
         setLoading(false);
       } catch (error) {
         console.log(error);
@@ -96,7 +98,7 @@ export default function ClientDashboard({client, fetchClient}) {
     console.log("newOrders", newOrders);
 
     useEffect(() => {
-      fetchNewOrders();
+      fetchAllOrders();
       fetchItems();
       // fetchClient();
     }, []);
@@ -229,12 +231,13 @@ export default function ClientDashboard({client, fetchClient}) {
             </ResponsiveContainer>
           </div>
         </div>
+          {/* Orders Table */}
+          <ClientItemsTable items={items} />
 
           {/* Products Table */}
-          {/* <AdminProductsTable /> */}
+          {/* pass all orders */}
+          <ClientOrdersTable orders={newOrders} />
 
-          {/* Orders Table */}
-          {/* <AdminOrdersTable /> */}
 
         {/* Bottom Grid */}
         <div className="grid grid-cols-2 gap-8">
