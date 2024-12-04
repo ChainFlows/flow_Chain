@@ -1,3 +1,5 @@
+import { flow_chain_backend } from "../../../declarations/flow_chain_backend";
+
 // create bid
 export async function createBid(bidPayload) {
   try {
@@ -108,8 +110,6 @@ export async function getSupplierActiveBids(supplierId) {
     return [];
   }
 }
-
-import { flow_chain_backend } from "../../../declarations/flow_chain_backend";
 
 export async function createQuotation(quotationPayload) {
   try {
