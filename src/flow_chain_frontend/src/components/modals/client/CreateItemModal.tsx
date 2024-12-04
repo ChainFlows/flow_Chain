@@ -216,9 +216,10 @@ export default function CreateItemModal({ isOpen, onClose, save }: CreateItemMod
               Cancel
             </button>
             <button
-              type="submit"
+              type="button"
               className="px-6 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800"
               onClick={() => {
+                console.log("The form data is: ", formData);
                 save({
                   name: formData.name,
                   description: formData.description,

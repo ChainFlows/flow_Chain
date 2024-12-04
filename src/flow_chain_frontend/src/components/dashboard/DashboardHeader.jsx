@@ -4,9 +4,9 @@ import { Box, Bell, ChevronDown } from 'lucide-react';
 
 export default function DashboardHeader(dataClient) {
 
-  const {logo, name} = dataClient.dataClient;
   console.log("first", dataClient);
   console.log("second", dataClient.dataClient);
+  const {logo, name} = dataClient.dataClient;
   return (
     <header className="sticky top-0 z-50 bg-white border-b">
       <div className="px-8 py-4 flex items-center justify-between">

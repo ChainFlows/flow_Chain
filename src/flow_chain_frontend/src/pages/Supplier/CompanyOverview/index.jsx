@@ -47,7 +47,9 @@ export default function CompanyOverviewPage({ supplier }) {
   const [newOrders, setNewOrders] = useState([]);
   const [tab, setTab] = useState("new");
 
-  const { id } = supplier;
+  const { id, name, logo } = supplier;
+  const datas = { name, logo }
+  console.log("supplier2", supplier)
 
   // createQuotation
   const saveQuotation = async (data) => {
