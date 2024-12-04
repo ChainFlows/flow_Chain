@@ -306,6 +306,7 @@ service : {
   get_client_by_owner : () -> (Result) query;
   get_client_completed_orders : (nat64) -> (vec Order) query;
   get_client_new_orders : (nat64) -> (vec Order) query;
+  get_client_orders : (nat64) -> (vec Order) query;
   get_driver : (nat64) -> (Result_6) query;
   get_driver_active_orders : (nat64) -> (vec Order) query;
   get_driver_by_owner : () -> (Result_6) query;

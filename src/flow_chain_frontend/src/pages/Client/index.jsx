@@ -44,7 +44,7 @@ const Client = () => {
         !loading ? (
           client?.name ? (
             <main>
-              <ClientDashboard client={client} fetchClient={fetchClient} />
+              <ClientDashboard client={client} />
             </main>
           ) : (
             <ActivateClientAccount fetchClient={fetchClient} />
