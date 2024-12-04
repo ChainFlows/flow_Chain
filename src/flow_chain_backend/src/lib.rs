@@ -1160,6 +1160,51 @@ fn create_bid(payload: BidPayload) -> Result<Bid, String> {
         Ok(bid)
     })
 }
+// create quotation
+#[ic_cdk::update]
+fn create_quotation(payload: QuotationPayload) -> Result<Quotation, String> {
+    let caller = ic_cdk::caller();
+    
+    // Verify the order exists and is open for bidding
+    let order = ORDERS.with(|orders| {
+        orders.borrow().get(&payload.order_id).clone()
+    }).ok_or("Order not found")?;
+
+    if order.supplier_id.is_none() {
+        return Err("This order does not have an assigned supplier".to_string());
+    }
+
+    // Get supplier details
+    let supplier = SUPPLIERS.with(|suppliers| {
+        suppliers.borrow()
+            .iter()
+            .find(|(_, s)| s.owner.to_text() == caller.to_text())
+            .map(|(_, s)| s.clone())
+    }).ok_or("Only registered suppliers can bid")?;
+
+    
+    let quotation = Quotation {
+        id: generate_uuid(),
+        quotation_title: payload.quotation_title,
+        supplier_id: supplier.id,
+        order_id: payload.order_id,
+        supplier_name: supplier.name,
+        supplier_address: supplier.address,
+        supplier_email: supplier.email,
+        service_description: payload.service_description,
+        shipping_cost: payload.shipping_cost,
+        quotation_status: "Pending".to_string(),
+    };
+
+       
+
+    // Save the quotation
+    QUOTATIONS.with(|quotations| {
+        quotations.borrow_mut().insert(quotation.id, quotation.clone());
+        Ok(quotation)
+    })
+}
+
 
 #[ic_cdk::query]
 fn get_order_bids(order_id: u64) -> Vec<Bid> {

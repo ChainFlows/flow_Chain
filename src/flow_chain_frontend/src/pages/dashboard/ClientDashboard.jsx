@@ -3,7 +3,7 @@ import DashboardLayout from '../../components/dashboard/DashboardLayout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link2, FileText, Package, MoreHorizontal, ChevronDown } from 'lucide-react';
 import AddOrder from '../order/AddOrder';
-import { createOrderDetails } from '../../utils/orders';
+import { assignSupplier, createOrderDetails } from '../../utils/orders';
 import {  getClientCompanyOrders } from '../../utils/clientCompany';
 import AddItem from '../item/AddItem';
 import { createItem,  getAllItemsByClient } from '../../utils/items';
@@ -82,6 +82,21 @@ export default function ClientDashboard({client}) {
       setLoading(false);
     }
   };
+
+    // assign supplier based on checking Quatation
+    const assignSupplierToOrder = async (orderId, supplierId) => {
+      try {
+        setLoading(true);
+        await assignSupplier(orderId, supplierId);
+        fetchAllOrders();
+        // toast(<NotificationSuccess text="Supplier assigned successfully." />);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+        // toast(<NotificationError text="Failed to assign supplier." />);
+      }
+    };
 
 
     // get new orders
@@ -236,7 +251,7 @@ export default function ClientDashboard({client}) {
 
           {/* Products Table */}
           {/* pass all orders */}
-          <ClientOrdersTable orders={newOrders} />
+          <ClientOrdersTable orders={newOrders} save={assignSupplierToOrder} />
 
 
         {/* Bottom Grid */}
