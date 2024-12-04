@@ -356,6 +356,7 @@ pub struct WarehousePayload {
     pub(crate) name: String,
     pub(crate) location: String,
     pub(crate) capacity: u64,
+    pub(crate) supplier_id: u64,
 }
 
 // warehouse add item payload

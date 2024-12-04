@@ -14,7 +14,13 @@ import {
   fetchSupplierBids,
   fetchAllWarehouseInventory,
   payDriverFunc,
+  saveItem,
+  saveWarehouse,
 } from "./utils/supplierUtils";
+import SupplierOrdersTable from "../../components/tables/SupplierOrdersTable";
+import SupplierItemsTable from "../../components/tables/SupplierItemsTable";
+import CreateItemModal from "../../components/modals/client/CreateItemModal";
+import CreateWarehouseModal from "../../components/modals/supplier/CreateWarehouseModal";
 
 export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
@@ -26,6 +32,9 @@ export default function SupplierDashboard({ supplier }) {
   const [allWarehouseInventory, setAllWarehouseInventory] = useState([]);
   const [bids, setBids] = useState([]);
   const [tab, setTab] = useState("new");
+  const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
+  const [isCreateWarehouseModalOpen, setIsCreateWarehouseModalOpen] =
+    useState(false);
 
   console.log("supplier2", supplier);
   const { id, name, logo } = supplier;
@@ -128,6 +137,14 @@ export default function SupplierDashboard({ supplier }) {
     },
   ];
 
+  const saveItemFun = (data) => {
+    saveItem(data, setLoading, id);
+  };
+
+  const saveWarehouseFun = (data) => {
+    saveWarehouse(data, setLoading, id);
+  };
+
   return (
     <DashboardLayout dataClient={datas}>
       <div className="p-8 bg-gray-50 min-h-screen">
@@ -136,9 +153,22 @@ export default function SupplierDashboard({ supplier }) {
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <p className="text-gray-500">March 24, 2026</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl text-sm border border-gray-200">
-            Last 30 days <ChevronDown className="w-4 h-4" />
+          <button
+            onClick={() => setIsCreateItemModalOpen(true)}
+            className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+          >
+            Create Item
           </button>
+
+          <button
+            onClick={() => setIsCreateWarehouseModalOpen(true)}
+            className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+          >
+            Create Warehouse
+          </button>
+          {/* <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl text-sm border border-gray-200">
+            Last 30 days <ChevronDown className="w-4 h-4" />
+          </button> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -149,6 +179,19 @@ export default function SupplierDashboard({ supplier }) {
             <RecentOrdersList orders={recentOrders} />
           </div>
         </div>
+        <div>
+          <SupplierOrdersTable
+            data={{
+              completedOrders: completedOrders,
+              currentOrders: currentOrders,
+              newOrders: newOrders,
+              orderListings: orderListings,
+            }}
+          />
+        </div>
+        {/* <div>
+          <SupplierItemsTable />
+        </div> */}
 
         <div className="mt-6">
           <ProductsTable products={products} />
@@ -162,6 +205,16 @@ export default function SupplierDashboard({ supplier }) {
         <div className="mt-8 text-center text-sm text-gray-500">
           Copyright © ChainFlow | Designed by Oduor - Powered by Duol Studio
         </div>
+        <CreateItemModal
+          save={saveItemFun}
+          isOpen={isCreateItemModalOpen}
+          onClose={() => setIsCreateItemModalOpen(false)}
+        />
+        <CreateWarehouseModal
+          save={saveWarehouseFun}
+          isOpen={isCreateWarehouseModalOpen}
+          onClose={() => setIsCreateWarehouseModalOpen(false)}
+        />
       </div>
     </DashboardLayout>
   );

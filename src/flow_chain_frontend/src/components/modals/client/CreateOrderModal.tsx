@@ -257,7 +257,7 @@ export default function CreateOrderModal({save, isOpen, onClose }: CreateOrderMo
               Cancel
             </button>
             <button
-              type="submit"
+              type="button"
               className="px-6 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800"
               onClick={() => {
                 save({
