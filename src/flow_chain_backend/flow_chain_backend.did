@@ -351,12 +351,14 @@ service : {
   get_supplier_bids : (nat64) -> (Result_13) query;
   get_supplier_by_owner : () -> (Result_1) query;
   get_supplier_completed_orders : (nat64) -> (vec Order) query;
+  get_supplier_drivers : (nat64) -> (vec Driver) query;
   get_supplier_new_orders : (nat64) -> (vec Order) query;
   get_supplier_warehouses : (nat64) -> (vec Warehouse) query;
   get_warehouse_capacity_status : (nat64) -> (Result_14) query;
   get_warehouse_inventory : (nat64) -> (Result_15) query;
   list_items : () -> (vec ItemDetails) query;
   list_items_by_client : (nat64) -> (vec ItemDetails) query;
+  list_items_by_supplier : (nat64) -> (vec ItemDetails) query;
   mark_order_as_completed : (nat64) -> (Result_2);
   remove_item_from_warehouse : (nat64, nat64, nat64) -> (Result_3);
   search_client_company : (text) -> (vec Client) query;

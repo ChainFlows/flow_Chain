@@ -9,12 +9,14 @@ import {
 } from "lucide-react";
 import {
   assignDriverFunc,
+  createQuotationFunc,
   fetchSupplierDrivers,
   saveBid,
   updateOrderStatusFunc,
 } from "../../pages/dashboard/utils/supplierUtils";
 import CreateBidModal from "../modals/supplier/CreateBidModal";
 import AssignDriverModal from "../modals/supplier/AssignDriverModal";
+import CreateQuotationModal from "../modals/supplier/CreateQuotationModal";
 // Nice
 
 interface Order {
@@ -46,6 +48,9 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
   const [orderId, setOrderId] = useState(0);
   const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
   const [isAssignDriverModalOpen, setIsAssignDriverModalOpen] = useState(false);
+  const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] = useState(
+    false
+  );
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -67,6 +72,10 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
   const assignDriverFun = (orderId, driverId) => {
     assignDriverFunc(orderId, driverId, setLoading);
 
+  };
+
+  const saveQuotationFun = (data) => {
+    createQuotationFunc(data, setLoading);
   };
 
   const handleChangeOrderStatus = (orderId, newStatus) => {
@@ -309,6 +318,12 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
         save={saveBidFun}
         isOpen={isCreateBidModalOpen}
         onClose={() => setIsCreateBidModalOpen(false)}
+      />
+      <CreateQuotationModal
+        orderId={orderId}
+        save={saveQuotationFun}
+        isOpen={isCreateQuotationModalOpen}
+        onClose={() => setIsCreateQuotationModalOpen(false)}
       />
       <AssignDriverModal
         orderId={orderId}
