@@ -97,18 +97,19 @@ type ItemDetails = record {
   unit_price : nat64;
   quantity : nat64;
   category : text;
+  client_id : opt nat64;
   dimensions : text;
 };
-type ItemDetailsPayload = record {
+type ItemDetailsClientPayload = record {
   sku : text;
   weight : text;
-  supplier_id : opt nat64;
   manufacturer : text;
   name : text;
   description : text;
   unit_price : nat64;
   quantity : nat64;
   category : text;
+  client_id : opt nat64;
   dimensions : text;
 };
 type MaintainanceRecord = record {
@@ -282,7 +283,7 @@ service : {
   create_bid : (BidPayload) -> (Result_5);
   create_client_company : (ClientCompanyPayload) -> (Result);
   create_driver : (DriverPayload) -> (Result_6);
-  create_item : (ItemDetailsPayload) -> (Result_7);
+  create_item_as_client : (ItemDetailsClientPayload) -> (Result_7);
   create_maintainance_record : (MaintainanceRecordPayload) -> (Result_8);
   create_order : (OrderDetailsPayload) -> (Result_2);
   create_payment_reservation : (nat64) -> (Result_9);
@@ -331,6 +332,7 @@ service : {
   get_warehouse_capacity_status : (nat64) -> (Result_13) query;
   get_warehouse_inventory : (nat64) -> (Result_14) query;
   list_items : () -> (vec ItemDetails) query;
+  list_items_by_client : (nat64) -> (vec ItemDetails) query;
   mark_order_as_completed : (nat64) -> (Result_2);
   remove_item_from_warehouse : (nat64, nat64, nat64) -> (Result_3);
   search_client_company : (text) -> (vec Client) query;
@@ -338,7 +340,7 @@ service : {
   search_supplier_company : (text) -> (vec Supplier) query;
   update_client_company : (nat64, ClientCompanyPayload) -> (Result);
   update_driver : (nat64, UpdateDriverPayload) -> (Result_6);
-  update_item : (nat64, ItemDetailsPayload) -> (Result_7);
+  update_item_as_client : (nat64, ItemDetailsClientPayload) -> (Result_7);
   update_item_quantity : (nat64, nat64, nat64) -> (Result_3);
   update_order_status : (nat64, text) -> (Result_2);
   update_supplier_company : (nat64, SupplierCompanyPayload) -> (Result_1);

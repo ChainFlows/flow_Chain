@@ -434,7 +434,10 @@ fn get_client_new_orders(client_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
+                println!("Order: {:?}", order);
+                println!("Client ID: {:?}", client_id);
                 if order.company_id == client_id && order.supplier_id == None {
+
                     Some(order.clone())
                 } else {
                     None
@@ -1417,8 +1420,11 @@ fn assign_driver(order_id: u64, driver_id: u64) -> Result<Order, String> {
 }
 
 // Function to create a new item
+
+
+// Fn creat Item as a Client make supplier_id None
 #[ic_cdk::update]
-fn create_item(payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
+fn create_item_as_client(payload: ItemDetailsClientPayload) -> Result<ItemDetails, String> {
     let current_time = ic_cdk::api::time();
     let formatted_time = format!("{}", current_time);
 
@@ -1434,8 +1440,12 @@ fn create_item(payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
         manufacturer: payload.manufacturer,
         sku: payload.sku,
         status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
-        client_id: payload.client_id,
-        supplier_id: payload.supplier_id,
+        client_id: match payload.client_id {
+            Some(id) => Some(id),
+            None => None,
+        }
+        ,
+        supplier_id: None,
         created_at: formatted_time.clone(),
         updated_at: formatted_time,
     };
@@ -1448,7 +1458,7 @@ fn create_item(payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
 
 // Function to update an item
 #[ic_cdk::update]
-fn update_item(id: u64, payload: ItemDetailsPayload) -> Result<ItemDetails, String> {
+fn update_item_as_client(id: u64, payload: ItemDetailsClientPayload) -> Result<ItemDetails, String> {
     ITEMS.with(|items| {
         let mut items = items.borrow_mut();
         
@@ -1466,7 +1476,7 @@ fn update_item(id: u64, payload: ItemDetailsPayload) -> Result<ItemDetails, Stri
                 sku: payload.sku,
                 status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
                 client_id: payload.client_id,
-                supplier_id: payload.supplier_id,
+                supplier_id: None,
                 created_at: existing_item.created_at.clone(),
                 updated_at: format!("{}", ic_cdk::api::time()),
             };
@@ -1497,6 +1507,26 @@ fn list_items() -> Vec<ItemDetails> {
         items.borrow()
             .iter()
             .map(|(_, item)| item.clone())
+            .collect()
+    })
+}
+
+// Function to list all items by client
+#[ic_cdk::query]
+fn list_items_by_client(client_id: u64) -> Vec<ItemDetails> {
+    ITEMS.with(|items| {
+        items.borrow()
+            .iter()
+            .filter_map(|(_, item)| {
+                if item.client_id == Some(client_id) {
+
+                    println!("Item: {:?}", item.client_id);
+                    println!("Client ID: {:?}", client_id);
+                    Some(item.clone())
+                } else {
+                    None
+                }
+            })
             .collect()
     })
 }

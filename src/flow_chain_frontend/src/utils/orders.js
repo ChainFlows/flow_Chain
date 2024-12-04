@@ -9,7 +9,7 @@ export async function createOrderDetails(orderDetails) {
   
   export async function getAllOrderDetails() {
     try {
-      return await window.canister.chainflow.getAllOrderDetails();
+      return await flow_chain_backend.get_all_orders();
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;

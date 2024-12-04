@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import DashboardLayout from '../../components/dashboard/DashboardLayout';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Link2, FileText, Package, MoreHorizontal, ChevronDown } from 'lucide-react';
@@ -6,23 +6,36 @@ import AddOrder from '../order/AddOrder';
 import { createOrderDetails } from '../../utils/orders';
 import { getClientCompanyNewOrders } from '../../utils/clientCompany';
 import AddItem from '../item/AddItem';
-import { createItem, getAllItems } from '../../utils/items';
+import { createItem,  getAllItemsByClient } from '../../utils/items';
+import CreateItemModal from '../../components/modals/client/CreateItemModal';
+import CreateOrderModal from '../../components/modals/client/CreateOrderModal';
 
 export default function ClientDashboard({client, fetchClient}) {
 
   const [loading, setLoading] = React.useState(false);
   const [newOrders, setNewOrders] = React.useState([]);
+  const [isCreateItemModalOpen, setIsCreateItemModalOpen] = useState(false);
+  const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false);
+
   const [items, setItems] = React.useState([]);
 
-  const { id } = client;
+  const { id, name, logo } = client;
+
+  const datas = {  name, logo };
   console.log("client2", client);
 
   // save item
   const saveItem = async (data) => {
     try {
       setLoading(true);
-      const supplierIdStr = data.supplier_id;
-      data.supplier_id = parseInt(supplierIdStr, 10);
+      const PriceStr = data.unit_price;
+      const QuantityStr = data.quantity;
+      data.unit_price = BigInt(PriceStr);
+      data.quantity = BigInt(QuantityStr);
+
+      data.client_id = [id];
+
+
       createItem(data).then((resp) => {
         console.log(resp);
         // toast(<NotificationSuccess text="Item added successfully." />);
@@ -39,8 +52,7 @@ export default function ClientDashboard({client, fetchClient}) {
   const fetchItems = useCallback(async () => {
     try {
       setLoading(true);
-      setItems(await getAllItems());
-      setLoading(false);
+      setItems(await getAllItemsByClient());
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -81,28 +93,29 @@ export default function ClientDashboard({client, fetchClient}) {
         setLoading(false);
       }
     });
+    console.log("newOrders", newOrders);
 
     useEffect(() => {
-      // fetchNewOrders();
+      fetchNewOrders();
       fetchItems();
       // fetchClient();
     }, []);
   const operations = [
     {
       icon: <Link2 className="w-5 h-5 text-blue-900" />,
-      title: 'Emergency Response Operations',
+      title: 'Inventory Management and Optimization',
       progress: 50,
       color: 'bg-green-500'
     },
     {
       icon: <FileText className="w-5 h-5 text-purple-900" />,
-      title: 'Relief Food Delivery',
+      title: 'Distribution Planning and Execution',
       progress: 10,
       color: 'bg-green-500'
     },
     {
       icon: <Package className="w-5 h-5 text-yellow-900" />,
-      title: 'Search and Rescue Operations',
+      title: 'Procurement and Supplier Coordination',
       progress: 87,
       color: 'bg-green-500'
     }
@@ -130,14 +143,27 @@ export default function ClientDashboard({client, fetchClient}) {
   ];
 
   return (
-    <DashboardLayout>
+    <DashboardLayout dataClient={datas} >
       <div className="p-8">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <p className="text-gray-500">March 24, 2026</p>
           </div>
-          <AddItem save={saveItem} />
+          <button
+              onClick={() => setIsCreateItemModalOpen(true)}
+              className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+            >
+              Create Item
+            </button>
+
+            <button
+              onClick={() => setIsCreateOrderModalOpen(true)}
+              className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+            >
+              Create Order
+            </button>
+          {/* <AddItem save={saveItem} /> */}
           {/* <AddOrder save={saveOrder} /> */}
         </div>
 
@@ -203,6 +229,12 @@ export default function ClientDashboard({client, fetchClient}) {
             </ResponsiveContainer>
           </div>
         </div>
+
+          {/* Products Table */}
+          {/* <AdminProductsTable /> */}
+
+          {/* Orders Table */}
+          {/* <AdminOrdersTable /> */}
 
         {/* Bottom Grid */}
         <div className="grid grid-cols-2 gap-8">
@@ -288,6 +320,19 @@ export default function ClientDashboard({client, fetchClient}) {
         <div className="mt-8 text-center text-sm text-gray-500">
           Copyright © ChainFlow | Designed by Oduor - Powered by Duol Studio
         </div>
+
+        <CreateItemModal
+          save={saveItem}
+          isOpen={isCreateItemModalOpen}
+          onClose={() => setIsCreateItemModalOpen(false)}
+        />
+
+
+        <CreateOrderModal
+          save={saveOrder}
+          isOpen={isCreateOrderModalOpen}
+          onClose={() => setIsCreateOrderModalOpen(false)}
+        />
       </div>
     </DashboardLayout>
   );

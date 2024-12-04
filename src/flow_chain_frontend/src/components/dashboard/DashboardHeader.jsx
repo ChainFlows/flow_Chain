@@ -2,7 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Bell, ChevronDown } from 'lucide-react';
 
-export default function DashboardHeader() {
+export default function DashboardHeader(dataClient) {
+
+  const {logo, name} = dataClient.dataClient;
+  console.log("first", dataClient);
+  console.log("second", dataClient.dataClient);
   return (
     <header className="sticky top-0 z-50 bg-white border-b">
       <div className="px-8 py-4 flex items-center justify-between">
@@ -27,10 +31,10 @@ export default function DashboardHeader() {
           </button>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-[#004AAD] text-white flex items-center justify-center text-sm">
-              JC
+              <img src={logo || '/images/avatar.png'} alt="avatar" className="w-6 h-6 rounded-full" />
             </div>
             <div>
-              <div className="text-sm font-medium">John Carter</div>
+              <div className="text-sm font-medium">{name}</div>
               <div className="text-xs text-gray-500">Account settings</div>
             </div>
             <ChevronDown className="w-4 h-4 text-gray-400" />

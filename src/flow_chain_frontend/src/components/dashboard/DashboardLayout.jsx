@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import DashboardHeader from './DashboardHeader';
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({dataClient, children }) {
   const location = useLocation();
 
   const menuItems = [
@@ -68,7 +68,7 @@ export default function DashboardLayout({ children }) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <DashboardHeader />
+        <DashboardHeader dataClient={dataClient} />
         <main className="flex-1 overflow-auto bg-gray-50">{children}</main>
       </div>
     </div>
