@@ -15,10 +15,10 @@ export default function LoginModal({ isOpen, onClose }) {
     if (selectedRole) {
       switch (selectedRole) {
         case 'Supplier':
-          navigate('/clients');
+          navigate('/suppliers');
           break;
         case 'Driver':
-          navigate('/driver-registration');
+          navigate('/driver');
           break;
         default:
           const path = `/dashboard/${selectedRole.toLowerCase().replace(' ', '-')}`;
