@@ -7,7 +7,6 @@ export default function LoginModal({ isOpen, onClose }) {
   const navigate = useNavigate();
 
   const roles = [
-    ['Admin', 'Warehouse Manager', 'Guest'],
     ['Client', 'Supplier', 'Driver']
   ];
 

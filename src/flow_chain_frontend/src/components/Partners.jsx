@@ -9,14 +9,14 @@ export default function Partners() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isGetInTouchOpen, setIsGetInTouchOpen] = useState(false);
 
-  const partners = [
-    { name: 'Naviok', logo: '/logos/naviok.png' },
-    { name: 'Oculus', logo: '/logos/oculus.png' },
-    { name: 'Samsung', logo: '/logos/samsung.png' },
-    { name: 'SQLite', logo: '/logos/sqlite.png' },
-    { name: 'LinkedIn', logo: '/logos/linkedin.png' },
-    { name: 'Chamilo', logo: '/logos/chamilo.png' },
-  ];
+  // const partners = [
+  //   { name: 'Naviok', logo: '/logos/naviok.png' },
+  //   { name: 'Oculus', logo: '/logos/oculus.png' },
+  //   { name: 'Samsung', logo: '/logos/samsung.png' },
+  //   { name: 'SQLite', logo: '/logos/sqlite.png' },
+  //   { name: 'LinkedIn', logo: '/logos/linkedin.png' },
+  //   { name: 'Chamilo', logo: '/logos/chamilo.png' },
+  // ];
 
   return (
     <>
@@ -24,7 +24,7 @@ export default function Partners() {
         <div className="container mx-auto px-4 md:px-8 py-24">
           <div className="bg-blue-900 rounded-3xl p-8 md:p-12">
             {/* Partners Logo Row */}
-            <div className="flex flex-wrap justify-between items-center mb-12">
+            {/* <div className="flex flex-wrap justify-between items-center mb-12">
               {partners.map((partner, index) => (
                 <img
                   key={index}
@@ -33,7 +33,7 @@ export default function Partners() {
                   className="h-8 md:h-10 object-contain filter brightness-0 invert"
                 />
               ))}
-            </div>
+            </div> */}
 
             {/* Content Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
