@@ -151,13 +151,15 @@ export default function ClientOrdersTable({orders,save}) {
                   </td>
                   <td className="py-4">
                     <div className="flex justify-end gap-2">
-                    <button 
-                        className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
-                        onClick={() => setIsQuotationModalOpen(true)}
-                      >
+                      {/* show this button below only when order is in New */}
+                      {order.status === 'New' && (
+                        <button 
+                          className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
+                          onClick={() => setIsQuotationModalOpen(true)}
+                        >
                           <CheckSquareIcon className="w-4 h-4 text-gray-400" />
-
-                      </button>
+                        </button>
+                      )}
                       <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
                         <Trash className="w-4 h-4 text-gray-400" />
                       </button>

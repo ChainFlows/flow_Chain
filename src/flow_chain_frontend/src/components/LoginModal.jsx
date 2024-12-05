@@ -24,6 +24,7 @@ export default function LoginModal({ isOpen, onClose }) {
           break;
         case 'Client':
           navigate("/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai");
+          break;
         default:
           const path = `/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai`;
           navigate(path);
