@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function LoginModal({ isOpen, onClose }) {
   const [selectedRole, setSelectedRole] = useState(null);
+  // const [showInternetIdentity, setShowInternetIdentity] = useState(false);
   const navigate = useNavigate();
 
   const roles = [
-    ["Admin", "Warehouse Manager", "Guest"],
-    ["Client", "Supplier", "Driver"],
+    ['Client', 'Supplier', 'Driver']
   ];
   const handleLogin = () => {
     if (selectedRole) {
@@ -35,6 +35,7 @@ export default function LoginModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
+    <>
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-3xl p-12 w-full max-w-xl relative">
         <button
@@ -89,5 +90,7 @@ export default function LoginModal({ isOpen, onClose }) {
         </div>
       </div>
     </div>
+
+  </>
   );
 }

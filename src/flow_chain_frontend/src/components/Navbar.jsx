@@ -12,7 +12,7 @@ export default function Navbar() {
       <nav className="sticky top-0 z-50 bg-white border-b">
         <div className="container mx-auto px-4 md:px-8 py-4 flex items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai" className="flex items-center gap-2">
             <Box className="w-8 h-8 text-blue-900" />
             <span className="font-medium text-xl">Flowchain</span>
           </Link>
@@ -21,20 +21,20 @@ export default function Navbar() {
           <div className="flex-1 flex justify-center">
             <div className="hidden md:flex items-center gap-12">
               <Link 
-                to="/" 
-                className={`hover:text-blue-900 text-sm font-medium ${location.pathname === '/' ? 'text-blue-900' : ''}`}
+                to="/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai" 
+                className={`hover:text-blue-900 text-sm font-medium ${location.pathname === '/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' ? 'text-blue-900' : ''}`}
               >
                 HOME
               </Link>
               <Link 
-                to="/about" 
-                className={`hover:text-blue-900 text-sm font-medium ${location.pathname === '/about' ? 'text-blue-900' : ''}`}
+                to="/about?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai" 
+                className={`hover:text-blue-900 text-sm font-medium ${location.pathname === '/about?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' ? 'text-blue-900' : ''}`}
               >
                 ABOUT
               </Link>
               <Link 
-                to="/services" 
-                className={`hover:text-blue-900 text-sm font-medium ${location.pathname === '/services' ? 'text-blue-900' : ''}`}
+                to="/services?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai" 
+                className={`hover:text-blue-900 text-sm font-medium ${location.pathname === '/services?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' ? 'text-blue-900' : ''}`}
               >
                 SERVICES
               </Link>
