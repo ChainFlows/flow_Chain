@@ -114,7 +114,7 @@ export async function getSupplierActiveBids(supplierId) {
 export async function createQuotation(quotationPayload) {
   try {
     console.log("utils", quotationPayload);
-    return await window.canister.flowchain.createQuotation(quotationPayload);
+    return await window.canister.flowchain.create_quotation(quotationPayload);
   } catch (err) {
     console.log(err);
     if (err.name === "AgentHTTPResponseError") {

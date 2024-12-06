@@ -4,6 +4,7 @@ import { assignDriver, updateOrderStatus } from "../../../utils/orders";
 import {
   approveBid,
   createBid,
+  createQuotation,
   getOrderBids,
   getSupplierBids,
   withdrawBid,
@@ -107,11 +108,7 @@ export const fetchSupplierDrivers = async (setDrivers, setLoading, id) => {
 };
 
 // assign driver
-export const assignDriverFunc = async (
-  orderId,
-  driverId,
-  setLoading
-) => {
+export const assignDriverFunc = async (orderId, driverId, setLoading) => {
   try {
     setLoading(true);
     await assignDriver(orderId, driverId);
@@ -361,6 +358,24 @@ export const updateOrderStatusFunc = async (orderId, status, setLoading) => {
   } catch (error) {
     console.error(error);
     // toast(<NotificationError text="Failed to update order status." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// create quotation
+export const createQuotationFunc = async (data, setLoading) => {
+  try {
+    setLoading(true);
+    const shippingStr = data.shipping_cost;
+    data.shipping_cost = BigInt(shippingStr);
+    await createQuotation(data).then((resp) => {
+      console.log("quotation created", resp);
+    });
+    // toast(<NotificationSuccess text="Quotation created successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to create quotation." />);
   } finally {
     setLoading(false);
   }
