@@ -276,7 +276,6 @@ pub struct OrderDetailsPayload {
 #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
 pub struct QuotationPayload {
     pub(crate) quotation_title: String,
-    pub(crate) supplier_id: u64,
     pub(crate) order_id: u64,
     pub(crate) service_description: String,
     pub(crate) shipping_cost: u64,
