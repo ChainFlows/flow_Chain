@@ -15,7 +15,7 @@ const Login = ({ login, onClose }) => {
       console.log("Starting II authentication...");
       await login();
       console.log("II Authentication successful");
-      navigate("/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai");
+      navigate("/suppliers?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai");
     } catch (error) {
       console.error("II authentication error:", error);
       setError(
