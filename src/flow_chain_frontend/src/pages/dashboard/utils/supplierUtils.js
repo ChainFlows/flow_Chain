@@ -1,9 +1,18 @@
 // supplierDashboardFunctions.js
+import { getAllItemsBySupplier } from "../../../utils/items";
+import { assignDriver, updateOrderStatus } from "../../../utils/orders";
+import {
+  approveBid,
+  createBid,
+  getOrderBids,
+  getSupplierBids,
+  withdrawBid,
+} from "../../../utils/quatation";
 import {
   createItem,
   getNewOrders,
+  getSupplierDrivers,
   getSupplyCompanyActiveOrders,
-  getSupplyCompanyBids,
   getSupplyCompanyCompletedOrders,
   getSupplyCompanyNewOrders,
   payDriver as payDriverAPI,
@@ -11,6 +20,8 @@ import {
 import {
   createWarehouse,
   getAllWarehouseInventory,
+  getSupplierWarehouses,
+  getWarehouseCapacityStatus,
 } from "../../../utils/warehouse";
 
 export const fetchNewOrderListings = async (setOrderListings, setLoading) => {
@@ -65,34 +76,6 @@ export const fetchCurrentOrders = async (setCurrentOrders, setLoading, id) => {
   }
 };
 
-export const fetchSupplierBids = async (setBids, setLoading, id) => {
-  try {
-    setLoading(true);
-    const bids = await getSupplyCompanyBids(id);
-    setBids(bids.Ok);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-};
-
-export const fetchAllWarehouseInventory = async (
-  setAllWarehouseInventory,
-  setLoading,
-  id
-) => {
-  try {
-    setLoading(true);
-    const inventory = await getAllWarehouseInventory(id);
-    setAllWarehouseInventory(inventory);
-  } catch (error) {
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-};
-
 export const payDriverFunc = async (data, fetchCompletedOrders, setLoading) => {
   const { orderId } = data;
   const amount = parseInt(data.amount, 10) * 10 ** 8;
@@ -105,6 +88,37 @@ export const payDriverFunc = async (data, fetchCompletedOrders, setLoading) => {
   } catch (error) {
     console.error(error);
     // toast(<NotificationError text="Failed to pay driver." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// getSupplierDrivers
+export const fetchSupplierDrivers = async (setDrivers, setLoading, id) => {
+  try {
+    setLoading(true);
+    const drivers = await getSupplierDrivers(id);
+    setDrivers(drivers);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// assign driver
+export const assignDriverFunc = async (
+  orderId,
+  driverId,
+  setLoading
+) => {
+  try {
+    setLoading(true);
+    await assignDriver(orderId, driverId);
+    // toast(<NotificationSuccess text="Driver assigned successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to assign driver." />);
   } finally {
     setLoading(false);
   }
@@ -148,6 +162,205 @@ export const saveWarehouse = async (data, setLoading, id) => {
     });
   } catch (error) {
     console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// list_items_by_supplier
+export const fetchSupplierItems = async (setItems, setLoading, id) => {
+  try {
+    setLoading(true);
+    const items = await getAllItemsBySupplier(id);
+    setItems(items);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const fetchSupplierWarehouses = async (
+  setWarehouses,
+  setLoading,
+  id
+) => {
+  try {
+    setLoading(true);
+    const warehouses = await getSupplierWarehouses(id);
+    setWarehouses(warehouses);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const fetchAllWarehouseInventory = async (
+  setAllWarehouseInventory,
+  setLoading,
+  id
+) => {
+  try {
+    setLoading(true);
+    const inventory = await getAllWarehouseInventory(id);
+    setAllWarehouseInventory(inventory);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+export const fetchWarehouseCapacityStatus = async (
+  setWarehouseCapacityStatus,
+  setLoading,
+  id
+) => {
+  try {
+    setLoading(true);
+    const warehouses = await getWarehouseCapacityStatus(id);
+    setWarehouseCapacityStatus(warehouses);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// addItemToWarehouse
+export const addItemToWarehouse = async (data, setLoading) => {
+  try {
+    setLoading(true);
+    const quantityStr = data.quantity;
+    data.quantity = BigInt(quantityStr);
+
+    await addItemToWarehouse(data);
+    // toast(<NotificationSuccess text="Item added to warehouse successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to add item to warehouse." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// removeItemFromWarehouse
+export const removeItemFromWarehouse = async (data, setLoading) => {
+  try {
+    setLoading(true);
+    const quantityStr = data.quantity;
+    data.quantity = BigInt(quantityStr);
+
+    await removeItemFromWarehouse(data);
+    // toast(<NotificationSuccess text="Item removed from warehouse successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to remove item from warehouse." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// updateItemQuantity
+export const updateItemQuantity = async (data, setLoading) => {
+  try {
+    setLoading(true);
+    const newQuantityStr = data.new_quantity;
+    data.new_quantity = BigInt(newQuantityStr);
+
+    await updateItemQuantity(data);
+    // toast(<NotificationSuccess text="Item quantity updated successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to update item quantity." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// create bid
+export const saveBid = async (data, setLoading) => {
+  try {
+    setLoading(true);
+    const amountStr = data.amount;
+    data.amount = BigInt(amountStr);
+
+    await createBid(data);
+    // toast(<NotificationSuccess text="Bid created successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to create bid." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// approve bid
+export const approveBidFunc = async (bidId, fetchSupplierBids, setLoading) => {
+  try {
+    setLoading(true);
+    await approveBid(bidId);
+    fetchSupplierBids(); // Refresh bids after approval
+    // toast(<NotificationSuccess text="Bid approved successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to approve bid." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// withdraw bid
+export const withdrawBidFunc = async (bidId, fetchSupplierBids, setLoading) => {
+  try {
+    setLoading(true);
+    await withdrawBid(bidId);
+    fetchSupplierBids(); // Refresh bids after withdrawal
+    // toast(<NotificationSuccess text="Bid withdrawn successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to withdraw bid." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// get order bids
+export const fetchOrderBids = async (setBids, setLoading, orderId) => {
+  try {
+    setLoading(true);
+    const bids = await getOrderBids(orderId);
+    setBids(bids);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// get supplier bids
+export const fetchSupplierBids = async (setBids, setLoading, supplierId) => {
+  try {
+    setLoading(true);
+    const bids = await getSupplierBids(supplierId);
+    setBids(bids);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// update order status
+export const updateOrderStatusFunc = async (orderId, status, setLoading) => {
+  try {
+    setLoading(true);
+    await updateOrderStatus(orderId, status);
+    // toast(<NotificationSuccess text="Order status updated successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to update order status." />);
   } finally {
     setLoading(false);
   }

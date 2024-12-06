@@ -21,7 +21,7 @@ export async function createOrderDetails(orderDetails) {
   
   export async function getOrderDetails(id) {
     try {
-      return await window.canister.chainflow.getOrderDetails(id);
+      return await window.canister.flowchain.getOrderDetails(id);
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
@@ -33,7 +33,7 @@ export async function createOrderDetails(orderDetails) {
   
   export async function updateOrderDetails(id,orderDetails) {
     try {
-      return await window.canister.chainflow.updateOrderDetails(id,orderDetails);
+      return await window.canister.flowchain.updateOrderDetails(id,orderDetails);
     }  catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
@@ -46,7 +46,7 @@ export async function createOrderDetails(orderDetails) {
 // updateOrderStatus
 export async function updateOrderStatus(id, status) {
     try {
-      return await window.canister.chainflow.updateOrderStatus(id, status);
+      return await window.canister.flowchain.update_order_status(id, status);
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
@@ -58,7 +58,7 @@ export async function updateOrderStatus(id, status) {
   
   export async function addItem(orderId, Item) {
     try {
-      return await window.canister.chainflow.addItem(orderId, Item);
+      return await window.canister.flowchain.addItem(orderId, Item);
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
@@ -72,7 +72,7 @@ export async function updateOrderStatus(id, status) {
   
   export async function assignDriver(orderId, driverId) {
     try {
-      return await window.canister.chainflow.assignDriver(orderId, driverId);
+      return await window.canister.flowchain.assignDriver(orderId, driverId);
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
@@ -99,7 +99,7 @@ export async function assignSupplier(orderId, supplierId) {
   
   export async function markOrderAsCompleted(completionPayload) {
     try {
-      return await window.canister.chainflow.markOrderAsCompleted(completionPayload);
+      return await window.canister.flowchain.markOrderAsCompleted(completionPayload);
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
@@ -112,7 +112,7 @@ export async function assignSupplier(orderId, supplierId) {
   
   export async function searchOrderByCategory(query) {
     try {
-      return await window.canister.chainflow.searchOrderByCategory(query);
+      return await window.canister.flowchain.searchOrderByCategory(query);
     } catch (err) {
       if (err.name === "AgentHTTPResponseError") {
         const authClient = window.auth.client;
