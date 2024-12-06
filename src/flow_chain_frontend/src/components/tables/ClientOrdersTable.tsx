@@ -154,15 +154,12 @@ export default function ClientOrdersTable({orders,save}) {
                       {/* show this button below only when order is in New */}
                       {order.status === 'New' && (
                         <button 
-                          className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
-                          onClick={() => setIsQuotationModalOpen(true)}
-                        >
-                          <CheckSquareIcon className="w-4 h-4 text-gray-400" />
-                        </button>
+                        className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                        onClick={() => setIsQuotationModalOpen(true)}
+                      >
+                        Check Quotations
+                      </button>                      
                       )}
-                      <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                        <Trash className="w-4 h-4 text-gray-400" />
-                      </button>
                     </div>
                   </td>
                 </tr>
