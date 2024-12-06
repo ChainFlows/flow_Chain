@@ -19,11 +19,12 @@ import {
   fetchSupplierItems,
   saveBid,
 } from "./utils/supplierUtils";
-import SupplierOrdersTable from "../../components/tables/SupplierOrdersTable";
+import SupplierOrdersTable from "../../components/tables/SupplierShippingOrdersTable";
 import SupplierItemsTable from "../../components/tables/SupplierItemsTable";
 import CreateItemModal from "../../components/modals/client/CreateItemModal";
 import CreateWarehouseModal from "../../components/modals/supplier/CreateWarehouseModal";
 import CreateBidModal from "../../components/modals/supplier/CreateBidModal";
+import SupplierDeliveryOrdersTable from "../../components/tables/SuuplierDeliveryOrdersTable";
 
 export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
@@ -195,6 +196,20 @@ export default function SupplierDashboard({ supplier }) {
         </div>
         <div>
           <SupplierOrdersTable
+            data={{
+              completedOrders: completedOrders,
+              currentOrders: currentOrders,
+              newOrders: newOrders,
+              orderListings: orderListings,
+            }}
+            supplier_id={id}
+            setUpdate={setUpdate}
+            // bidModal={setIsCreateBidModalOpen}
+            // setOrderId={setOrderId}
+          />
+        </div>
+        <div>
+          <SupplierDeliveryOrdersTable
             data={{
               completedOrders: completedOrders,
               currentOrders: currentOrders,

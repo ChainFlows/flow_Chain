@@ -11,10 +11,8 @@ import {
   assignDriverFunc,
   createQuotationFunc,
   fetchSupplierDrivers,
-  saveBid,
   updateOrderStatusFunc,
 } from "../../pages/dashboard/utils/supplierUtils";
-import CreateBidModal from "../modals/supplier/CreateBidModal";
 import AssignDriverModal from "../modals/supplier/AssignDriverModal";
 import CreateQuotationModal from "../modals/supplier/CreateQuotationModal";
 // Nice
@@ -40,17 +38,14 @@ interface Order {
   order_status: OrderStatus;
 }
 
-export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
+export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpdate }) {
   const [activeTab, setActiveTab] = useState<
     "Listings" | "New" | "current" | "completed"
   >("Listings");
 
   const [orderId, setOrderId] = useState(0);
-  const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
+  const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] = useState(false);
   const [isAssignDriverModalOpen, setIsAssignDriverModalOpen] = useState(false);
-  const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] = useState(
-    false
-  );
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -64,10 +59,6 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
     ...newOrders,
     ...orderListings,
   ];
-
-  const saveBidFun = (data) => {
-    saveBid(data, setLoading);
-  };
 
   const assignDriverFun = (orderId, driverId) => {
     assignDriverFunc(orderId, driverId, setLoading);
@@ -90,7 +81,7 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
   }));
 
   // use match to set filtered data per the activeTab with the array from data
-  const filteredOrders = () => {
+  const orderedOrders = () => {
     switch (activeTab) {
       case "Listings":
         return orderListings;
@@ -104,6 +95,11 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
         return [];
     }
   };
+    
+    const filteredOrders = () => {
+        const orders = ordersList;
+        return orders?.filter((order) => order.order_type === "delivery");
+    };
 
   // const orders_: Order[] = orders;
   console.log("The orders are: ", orders_);
@@ -162,7 +158,7 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
   return (
     <div className="bg-white rounded-3xl p-8 mb-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold">Orders</h2>
+        <h2 className="text-lg font-semibold">Items Purchase Orders</h2>
         <div className="flex gap-2">
           {(["Listings", "New", "current", "completed"] as const).map(
             (status) => (
@@ -285,7 +281,7 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
                         onClick={() => {
                           setOrderId(order.id);
                           activeTab === "Listings"
-                            ? setIsCreateBidModalOpen(true)
+                            ? setIsCreateQuotationModalOpen(true)
                             : activeTab === "New"
                             ? setIsAssignDriverModalOpen(true)
                             : activeTab === "current"
@@ -295,7 +291,7 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
                         className="px-2 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
                       >
                         {activeTab === "Listings"
-                          ? "Add Bid"
+                          ? "Add Quote"
                           : activeTab === "New"
                           ? "Assign Driver"
                           : activeTab === "current"
@@ -313,12 +309,6 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
           </table>
         </div>
       </div>
-      <CreateBidModal
-        orderId={orderId}
-        save={saveBidFun}
-        isOpen={isCreateBidModalOpen}
-        onClose={() => setIsCreateBidModalOpen(false)}
-      />
       <CreateQuotationModal
         orderId={orderId}
         save={saveQuotationFun}
