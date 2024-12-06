@@ -8,7 +8,6 @@ export default function ActivateSupplierAccount({ fetchSupplier }) {
   const [formData, setFormData] = useState({
     name: '',
     bussiness_type: '',
-    supplyChainype: '',
     address: '',
     email: '',
     phone: '',
@@ -90,7 +89,6 @@ export default function ActivateSupplierAccount({ fetchSupplier }) {
             {[
               { name: 'name', label: 'Supply Company Name', type: 'text' },
               { name: 'bussiness_type', label: 'Business Type', type: 'text' },
-              { name: 'supplyChainype', label: 'Supply Chain Type', type: 'text' },
               { name: 'address', label: 'Supply Company Address', type: 'text' },
               { name: 'email', label: 'Email Address', type: 'email' },
               { name: 'phone', label: 'Phone Number', type: 'tel' },
