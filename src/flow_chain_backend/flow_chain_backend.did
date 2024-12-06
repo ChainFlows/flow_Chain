@@ -112,18 +112,6 @@ type ItemDetailsClientPayload = record {
   client_id : opt nat64;
   dimensions : text;
 };
-type ItemDetailsSupplierPayload = record {
-  sku : text;
-  weight : text;
-  supplier_id : opt nat64;
-  manufacturer : text;
-  name : text;
-  description : text;
-  unit_price : nat64;
-  quantity : nat64;
-  category : text;
-  dimensions : text;
-};
 type MaintainanceRecord = record {
   id : nat64;
   vehicle_reg_no : text;
@@ -304,13 +292,12 @@ service : {
   create_client_company : (ClientCompanyPayload) -> (Result);
   create_driver : (DriverPayload) -> (Result_6);
   create_item_as_client : (ItemDetailsClientPayload) -> (Result_7);
-  create_item_as_supplier : (ItemDetailsSupplierPayload) -> (Result_7);
   create_maintainance_record : (MaintainanceRecordPayload) -> (Result_8);
   create_order : (OrderDetailsPayload) -> (Result_2);
   create_payment_reservation : (nat64) -> (Result_9);
   create_quotation : (QuotationPayload) -> (Result_10);
   create_supplier_company : (SupplierCompanyPayload) -> (Result_1);
-  create_warehouse : (WarehousePayload) -> (Result_3);
+  create_warehouse : (nat64, WarehousePayload) -> (Result_3);
   delete_client_company : (nat64) -> (Result);
   delete_item : (nat64) -> (Result_7);
   delete_supplier_company : (nat64) -> (Result_1);
