@@ -825,6 +825,19 @@ fn get_all_drivers() -> Vec<Driver> {
     })
 }
 
+// get supplier drivers 
+#[ic_cdk::query]
+fn get_supplier_drivers(supplier_id: u64) -> Vec<Driver> {
+    SUPPLIERS.with(|suppliers| {
+        let suppliers = suppliers.borrow();
+        let supplier = suppliers.get(&supplier_id);
+        match supplier {
+            Some(supplier) => supplier.drivers.clone(),
+            None => Vec::new(),
+        }
+    })
+}
+
 // Function to get driver active order
 #[ic_cdk::query]
 fn get_driver_active_orders(driver_id: u64) -> Vec<Order> {
@@ -1586,6 +1599,23 @@ fn list_items_by_client(client_id: u64) -> Vec<ItemDetails> {
 
                     println!("Item: {:?}", item.client_id);
                     println!("Client ID: {:?}", client_id);
+                    Some(item.clone())
+                } else {
+                    None
+                }
+            })
+            .collect()
+    })
+}
+
+// Function to list all items by supplier
+#[ic_cdk::query]
+fn list_items_by_supplier(supplier_id: u64) -> Vec<ItemDetails> {
+    ITEMS.with(|items| {
+        items.borrow()
+            .iter()
+            .filter_map(|(_, item)| {
+                if item.supplier_id == Some(supplier_id) {
                     Some(item.clone())
                 } else {
                     None

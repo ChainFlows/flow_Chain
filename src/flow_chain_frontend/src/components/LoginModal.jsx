@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginModal({ isOpen, onClose }) {
   const [selectedRole, setSelectedRole] = useState(null);
@@ -10,19 +10,18 @@ export default function LoginModal({ isOpen, onClose }) {
   const roles = [
     ['Client', 'Supplier', 'Driver']
   ];
-
   const handleLogin = () => {
     if (selectedRole) {
       switch (selectedRole) {
-        case 'Supplier':
+        case "Supplier":
           navigate("/suppliers?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai");
           break;
-        case 'Driver':
+        case "Driver":
           navigate(
-            "/driver-registration?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai"
+            "/driver?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai"
           );
           break;
-        case 'Client':
+        case "Client":
           navigate("/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai");
           break;
         default:
@@ -39,7 +38,7 @@ export default function LoginModal({ isOpen, onClose }) {
     <>
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-3xl p-12 w-full max-w-xl relative">
-        <button 
+        <button
           onClick={onClose}
           className="absolute right-6 top-6 hover:opacity-70"
         >
@@ -56,9 +55,9 @@ export default function LoginModal({ isOpen, onClose }) {
                   key={role}
                   onClick={() => setSelectedRole(role)}
                   className={`flex-1 p-4 rounded-xl text-sm transition-colors ${
-                    selectedRole === role 
-                      ? 'bg-blue-900 text-white' 
-                      : 'bg-gray-50 hover:bg-gray-100'
+                    selectedRole === role
+                      ? "bg-blue-900 text-white"
+                      : "bg-gray-50 hover:bg-gray-100"
                   }`}
                 >
                   {role}
@@ -69,13 +68,13 @@ export default function LoginModal({ isOpen, onClose }) {
         </div>
 
         <div className="mt-8 flex flex-col items-start">
-          <button 
+          <button
             onClick={handleLogin}
             disabled={!selectedRole}
             className={`px-8 py-2 text-sm rounded-full transition-colors ${
-              selectedRole 
-                ? 'bg-blue-900 text-white hover:bg-blue-800' 
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              selectedRole
+                ? "bg-blue-900 text-white hover:bg-blue-800"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
             }`}
           >
             Log in

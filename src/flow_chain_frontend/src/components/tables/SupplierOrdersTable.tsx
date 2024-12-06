@@ -1,5 +1,20 @@
-import React, { useState } from 'react';
-import { Pencil, Trash, Clock, CheckCircle, Package, CheckSquareIcon } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import {
+  Pencil,
+  Trash,
+  Clock,
+  CheckCircle,
+  Package,
+  CheckSquareIcon,
+} from "lucide-react";
+import {
+  assignDriverFunc,
+  fetchSupplierDrivers,
+  saveBid,
+  updateOrderStatusFunc,
+} from "../../pages/dashboard/utils/supplierUtils";
+import CreateBidModal from "../modals/supplier/CreateBidModal";
+import AssignDriverModal from "../modals/supplier/AssignDriverModal";
 // Nice
 
 interface Order {
@@ -11,69 +26,56 @@ interface Order {
   delivery_address: string;
   order_type: string;
   order_weight: number;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   category: string;
-  status: 'New' | 'current' | 'completed';
+  status: "New" | "pending" | "completed";
 }
 
-export default function SupplierOrdersTable({data}) {
-  const [activeTab, setActiveTab] = useState<'Listings' | 'New' | 'current' | 'completed'>('Listings');
+type OrderStatus = "New" | "pending" | "completed";
 
-  // const orders: Order[] = [
-  //   {
-  //     id: 'ORD-001',
-  //     orderName: 'Electronics Delivery',
-  //     customerName: 'John Carter',
-  //     expectedDeliveryDate: '2024-03-28',
-  //     pickupAddress: '123 Warehouse St, Industrial Area',
-  //     deliveryAddress: '456 Tech Ave, Business District',
-  //     orderType: 'Express',
-  //     orderWeight: 5.2,
-  //     priority: 'high',
-  //     category: 'Electronics',
-  //     status: 'new'
-  //   },
-  //   {
-  //     id: 'ORD-002',
-  //     orderName: 'Office Equipment',
-  //     customerName: 'Sophie Moore',
-  //     expectedDeliveryDate: '2024-03-29',
-  //     pickupAddress: '789 Supply Rd, Storage Zone',
-  //     deliveryAddress: '321 Office Blvd, Corporate Park',
-  //     orderType: 'Standard',
-  //     orderWeight: 12.8,
-  //     priority: 'medium',
-  //     category: 'Office Supplies',
-  //     status: 'current'
-  //   },
-  //   {
-  //     id: 'ORD-003',
-  //     orderName: 'Medical Supplies',
-  //     customerName: 'Daniel Johnson',
-  //     expectedDeliveryDate: '2024-03-25',
-  //     pickupAddress: '567 Medical Dr, Hospital Zone',
-  //     deliveryAddress: '890 Clinic St, Healthcare Center',
-  //     orderType: 'Priority',
-  //     orderWeight: 3.5,
-  //     priority: 'high',
-  //     category: 'Medical',
-  //     status: 'completed'
-  //   }
-  // ];
+interface Order {
+  id: string;
+  order_status: OrderStatus;
+}
+
+export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
+  const [activeTab, setActiveTab] = useState<
+    "Listings" | "New" | "current" | "completed"
+  >("Listings");
+
+  const [orderId, setOrderId] = useState(0);
+  const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
+  const [isAssignDriverModalOpen, setIsAssignDriverModalOpen] = useState(false);
+  const [drivers, setDrivers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   console.log("The orders are: ", data);
-    const { completedOrders, currentOrders, newOrders, orderListings } = data
-    // merge all the orders to one array from completedOrders,currentOrders,newOrders, arrays
+  const { completedOrders, currentOrders, newOrders, orderListings } = data;
+  // merge all the orders to one array from completedOrders,currentOrders,newOrders, arrays
 
   const ordersList = [
     ...completedOrders,
     ...currentOrders,
     ...newOrders,
-    ...orderListings
-  ]
-  
+    ...orderListings,
+  ];
+
+  const saveBidFun = (data) => {
+    saveBid(data, setLoading);
+  };
+
+  const assignDriverFun = (orderId, driverId) => {
+    assignDriverFunc(orderId, driverId, setLoading);
+
+  };
+
+  const handleChangeOrderStatus = (orderId, newStatus) => {
+    updateOrderStatusFunc(orderId, newStatus, setLoading);
+    setUpdate((prev) => !prev);
+  };
+
   console.log("The orders list are: ", ordersList);
-  const orders_: Order[] = ordersList?.map(order => ({
+  const orders_: Order[] = ordersList?.map((order) => ({
     ...order,
     status: order.order_status, // Normalize field name
   }));
@@ -81,65 +83,93 @@ export default function SupplierOrdersTable({data}) {
   // use match to set filtered data per the activeTab with the array from data
   const filteredOrders = () => {
     switch (activeTab) {
-      case 'Listings':
+      case "Listings":
         return orderListings;
-      case 'New':
+      case "New":
         return newOrders;
-      case 'current':
+      case "current":
         return currentOrders;
-      case 'completed':
+      case "completed":
         return completedOrders;
       default:
-        return []
+        return [];
     }
-  }
-  
+  };
+
   // const orders_: Order[] = orders;
   console.log("The orders are: ", orders_);
   // const filteredOrders = orders_.filter(order => order.status === activeTab );
   // const filteredOrders = orders_.filter(order => order.status === activeTab);
   console.log("filteredOrders: ", filteredOrders());
 
+  const getStatusDropdown = (
+  currentStatus: OrderStatus,
+  onChangeStatus: (newStatus: OrderStatus) => void
+) => {
+  const statusOptions: OrderStatus[] = ["New", "pending", "completed"];
+
+  return (
+    <select
+      value={currentStatus}
+      onChange={(e) => onChangeStatus(e.target.value as OrderStatus)}
+      className="bg-transparent border-none text-sm capitalize focus:ring-0"
+    >
+      {statusOptions.map((status) => (
+        <option key={status} value={status}>
+          {status}
+        </option>
+      ))}
+    </select>
+  );
+  };
+  
   const getStatusIcon = (status: Order['status']) => {
     switch (status) {
       case 'New':
         return <Package className="w-5 h-5 text-blue-500" />;
-      case 'current':
+      case 'pending':
         return <Clock className="w-5 h-5 text-orange-500" />;
       case 'completed':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
     }
   };
 
-  const getPriorityColor = (priority: Order['priority']) => {
+
+  const getPriorityColor = (priority: Order["priority"]) => {
     switch (priority) {
-      case 'low':
-        return 'bg-gray-100 text-gray-600';
-      case 'medium':
-        return 'bg-orange-100 text-orange-600';
-      case 'high':
-        return 'bg-red-100 text-red-600';
+      case "low":
+        return "bg-gray-100 text-gray-600";
+      case "medium":
+        return "bg-orange-100 text-orange-600";
+      case "high":
+        return "bg-red-100 text-red-600";
     }
   };
+
+  useEffect(() => {
+    fetchSupplierDrivers(setDrivers, setLoading, supplier_id);
+  }, []);
 
   return (
     <div className="bg-white rounded-3xl p-8 mb-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-semibold">Orders</h2>
         <div className="flex gap-2">
-          {(['Listings', 'New', 'current', 'completed'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setActiveTab(status)}
-              className={`px-4 py-2 rounded-xl text-sm transition-colors ${
-                activeTab === status
-                  ? 'bg-blue-900 text-white'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)} Orders
-            </button>
-          ))}
+          {(["Listings", "New", "current", "completed"] as const).map(
+            (status) => (
+              <button
+                key={status}
+                onClick={() => setActiveTab(status)}
+                className={`px-4 py-2 rounded-xl text-sm transition-colors ${
+                  activeTab === status
+                    ? "bg-blue-900 text-white"
+                    : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)} Orders
+              </button>
+            )
+          )}
         </div>
       </div>
 
@@ -148,31 +178,61 @@ export default function SupplierOrdersTable({data}) {
           <table className="w-full table-fixed">
             <thead>
               <tr className="text-left border-b border-gray-100">
-                <th className="pb-4 font-medium text-gray-500 w-24">ORDER ID</th>
-                <th className="pb-4 font-medium text-gray-500 w-40">ORDER NAME</th>
-                <th className="pb-4 font-medium text-gray-500 w-32">CUSTOMER</th>
-                <th className="pb-4 font-medium text-gray-500 w-32">EXPECTED DELIVERY</th>
-                <th className="pb-4 font-medium text-gray-500 w-48">PICKUP ADDRESS</th>
-                <th className="pb-4 font-medium text-gray-500 w-48">DELIVERY ADDRESS</th>
+                <th className="pb-4 font-medium text-gray-500 w-24">
+                  ORDER ID
+                </th>
+                <th className="pb-4 font-medium text-gray-500 w-40">
+                  ORDER NAME
+                </th>
+                <th className="pb-4 font-medium text-gray-500 w-32">
+                  CUSTOMER
+                </th>
+                <th className="pb-4 font-medium text-gray-500 w-32">
+                  EXPECTED DELIVERY
+                </th>
+                <th className="pb-4 font-medium text-gray-500 w-48">
+                  PICKUP ADDRESS
+                </th>
+                <th className="pb-4 font-medium text-gray-500 w-48">
+                  DELIVERY ADDRESS
+                </th>
                 <th className="pb-4 font-medium text-gray-500 w-24">TYPE</th>
-                <th className="pb-4 font-medium text-gray-500 w-24">WEIGHT (KG)</th>
-                <th className="pb-4 font-medium text-gray-500 w-24">PRIORITY</th>
-                <th className="pb-4 font-medium text-gray-500 w-32">CATEGORY</th>
+                <th className="pb-4 font-medium text-gray-500 w-24">
+                  WEIGHT (KG)
+                </th>
+                <th className="pb-4 font-medium text-gray-500 w-24">
+                  PRIORITY
+                </th>
+                <th className="pb-4 font-medium text-gray-500 w-32">
+                  CATEGORY
+                </th>
                 <th className="pb-4 font-medium text-gray-500 w-32">STATUS</th>
+                <th className="pb-4 font-medium text-gray-500 w-32">ACTIONS</th>
                 <th className="pb-4 w-20"></th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders()?.map((order) => (
-                <tr key={order.id} className="border-b border-gray-100 last:border-0">
-                  <td className="py-4 font-medium truncate">{order.id.toString()}</td>
-                  <td className="py-4">
-                    <div className="truncate hover:whitespace-normal">{order.order_name}</div>
+                <tr
+                  key={order.id}
+                  className="border-b border-gray-100 last:border-0"
+                >
+                  <td className="py-4 font-medium truncate">
+                    {order.id.toString()}
                   </td>
                   <td className="py-4">
-                    <div className="truncate hover:whitespace-normal">{order.company_name}</div>
+                    <div className="truncate hover:whitespace-normal">
+                      {order.order_name}
+                    </div>
                   </td>
-                  <td className="py-4">{new Date(order.expected_delivery).toLocaleDateString()}</td>
+                  <td className="py-4">
+                    <div className="truncate hover:whitespace-normal">
+                      {order.company_name}
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    {new Date(order.expected_delivery).toLocaleDateString()}
+                  </td>
                   <td className="py-4">
                     <div className="truncate hover:whitespace-normal hover:relative hover:z-10 hover:bg-white">
                       {order.pickup_address}
@@ -186,23 +246,52 @@ export default function SupplierOrdersTable({data}) {
                   <td className="py-4">{order.order_type}</td>
                   <td className="py-4">{order.order_weight}</td>
                   <td className="py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs ${getPriorityColor(order.priority)}`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs ${getPriorityColor(
+                        order.priority
+                      )}`}
+                    >
                       {order.priority}
                     </span>
                   </td>
                   <td className="py-4">
-                    <div className="truncate hover:whitespace-normal">{order.category}</div>
-                  </td>
-                  <td className="py-4">
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(order.status)}
-                      <span className="text-sm capitalize">{order.status}</span>
+                    <div className="truncate hover:whitespace-normal">
+                      {order.category}
                     </div>
                   </td>
                   <td className="py-4">
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(order.order_status)}
+                    {getStatusDropdown(order.order_status, (newStatus) =>
+                      handleChangeOrderStatus(order.id, newStatus)
+                      )}
+                    <span className="sr-only">{order.order_status}</span> {/* Hidden text for accessibility */}
+                  </div>
+                </td>
+
+
+                  <td className="py-4 min-w-20">
                     <div className="flex justify-end gap-2">
-                      <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                        <CheckSquareIcon className="w-4 h-4 text-gray-400" />
+                      <button
+                        onClick={() => {
+                          setOrderId(order.id);
+                          activeTab === "Listings"
+                            ? setIsCreateBidModalOpen(true)
+                            : activeTab === "New"
+                            ? setIsAssignDriverModalOpen(true)
+                            : activeTab === "current"
+                            ? console.log("Update Status")
+                            : console.log("View Details");
+                        }}
+                        className="px-2 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+                      >
+                        {activeTab === "Listings"
+                          ? "Add Bid"
+                          : activeTab === "New"
+                          ? "Assign Driver"
+                          : activeTab === "current"
+                          ? "Update Status"
+                          : "View Details"}
                       </button>
                       <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
                         <Trash className="w-4 h-4 text-gray-400" />
@@ -215,6 +304,19 @@ export default function SupplierOrdersTable({data}) {
           </table>
         </div>
       </div>
+      <CreateBidModal
+        orderId={orderId}
+        save={saveBidFun}
+        isOpen={isCreateBidModalOpen}
+        onClose={() => setIsCreateBidModalOpen(false)}
+      />
+      <AssignDriverModal
+        orderId={orderId}
+        isOpen={isAssignDriverModalOpen}
+        onClose={() => setIsAssignDriverModalOpen(false)}
+        drivers={drivers}
+        assignDriver={assignDriverFun}
+      />
     </div>
   );
 }
