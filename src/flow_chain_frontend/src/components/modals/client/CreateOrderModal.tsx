@@ -140,9 +140,8 @@ export default function CreateOrderModal({save, isOpen, onClose }: CreateOrderMo
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-blue-900 focus:border-blue-900"
               >
                 <option value="">Select Order Type</option>
-                <option value="standard">Standard</option>
-                <option value="express">Express</option>
-                <option value="same-day">Same Day</option>
+                <option value="shipping">Shipping Items for client</option>
+                <option value="delivery">buying Items for delivery</option>
               </select>
             </div>
 
