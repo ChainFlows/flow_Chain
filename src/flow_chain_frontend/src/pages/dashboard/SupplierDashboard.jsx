@@ -214,7 +214,7 @@ export default function SupplierDashboard({ supplier }) {
           <SupplierDeliveryOrdersTable
             data={{
               completedOrders: completedOrders,
-              currentOrders: currentOrders,
+              pendingOrders: pendingOrders,
               newOrders: newOrders,
               orderListings: orderListings,
             }}
