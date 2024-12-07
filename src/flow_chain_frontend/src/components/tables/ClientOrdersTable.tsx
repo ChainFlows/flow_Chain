@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Pencil, Trash, Clock, CheckCircle, Package, CheckSquareIcon } from 'lucide-react';
 import QuotationModal from '../modals/QuotationModal';
+import BidModal from '../modals/BidModal';
 // Nice
 
 interface Order {
@@ -28,9 +29,11 @@ const dummyQuotation = {
   supplier: "FastTrack Logistics"
 };
 
-export default function ClientOrdersTable({orders,save}) {
+export default function ClientOrdersTable({orders,save, save2}) {
   const [activeTab, setActiveTab] = useState<'New' | 'current' | 'completed'>('New');
   const [isQuotationModalOpen, setIsQuotationModalOpen] = useState(false);
+  const [isBidModalOpen, setIsBidModalOpen] = useState(false);
+
 
   
   
@@ -151,14 +154,22 @@ export default function ClientOrdersTable({orders,save}) {
                   </td>
                   <td className="py-4">
                     <div className="flex justify-end gap-2">
-                      {/* show this button below only when order is in New */}
-                      {order.status === 'New' && (
-                        <button 
-                        className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                        onClick={() => setIsQuotationModalOpen(true)}
-                      >
-                        Check Quotations
-                      </button>                      
+                      {/* Show this button below only when the order is in 'New' */}
+                      {order.status === 'New' && order.order_type === 'delivery' && (
+                        <button
+                          className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                          onClick={() => setIsQuotationModalOpen(true)}
+                        >
+                          Check Quotations
+                        </button>
+                      )}
+                      {order.status === 'New' && order.order_type === 'shipping' && (
+                        <button
+                          className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                          onClick={() => setIsBidModalOpen(true)}
+                        >
+                          Check Bids
+                        </button>
                       )}
                     </div>
                   </td>
@@ -168,6 +179,13 @@ export default function ClientOrdersTable({orders,save}) {
                 onClose={() => setIsQuotationModalOpen(false)}
                 order={order}
                 save={save}
+              />
+
+              <BidModal
+                isOpen={isBidModalOpen}
+                onClose={() => setIsBidModalOpen(false)}
+                order={order}
+                save2={save2}
               />
               </>
               ))}

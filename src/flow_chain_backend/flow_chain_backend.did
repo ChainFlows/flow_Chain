@@ -286,6 +286,7 @@ service : {
   add_item_to_warehouse : (WarehouseAddItemPayload) -> (Result_3);
   add_product : (nat64, text) -> (Result);
   approve_bid : (nat64) -> (Result_4);
+  assign_bid_supplier : (nat64, nat64) -> (Result_2);
   assign_driver : (nat64, nat64) -> (Result_2);
   assign_supplier : (nat64, nat64) -> (Result_2);
   create_bid : (BidPayload) -> (Result_5);

@@ -45,6 +45,8 @@ export const useAuth = () => {
     }
     return new Promise((resolve, reject) => {
       authClient.login({
+        // https://identity.ic0.app/#authorize
+        // identityProvider: "https://identity.ic0.app/#authorize", //change this for local dev
         identityProvider: "http://be2us-64aaa-aaaaa-qaabq-cai.localhost:4943/", //change this for local dev
         maxTimeToLive: BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000), // 7 days
         derivationOrigin: window.location.origin,
