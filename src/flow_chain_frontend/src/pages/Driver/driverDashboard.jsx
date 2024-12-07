@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import { Clock, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  get_driver_active_orders,
+  get_driver_completed_orders,
+} from "../../utils/driver";
 
-import { get_driver_active_orders, get_driver_completed_orders } from "../../utils/driver";
 import ActiveOrders from "../../components/driver/activeOrders";
 
 export default function driverDashboard({ driver }) {
@@ -13,6 +16,7 @@ export default function driverDashboard({ driver }) {
   const [activeTab, setActiveTab] = useState("due");
   const [activeOrders, setActiveOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
+  const [pendingDeliveries, setPendingDeliveries] = useState([]);
 
   const currentDelivery = {
     title: "Medical Delivery",
@@ -34,132 +38,92 @@ export default function driverDashboard({ driver }) {
 
   const upcomingDeliveries = [
     {
-      title: "Satellite Phones Delivery",
-      description: "To enable communication in remote areas",
-      type: "Aid",
-      date: "Nov 24, 2026",
-      team: ["JC", "SM"],
+      order_name: "Satellite Phones Delivery",
+      company_name: "Communication Aid Inc.",
+      expected_delivery: "Nov 24, 2026",
+      pickup_address: "123 Comm Street, Nairobi",
+      delivery_address: "Remote Area 1, Nairobi",
+      order_status: "assigned",
     },
     {
-      title: "Emergency Kit Distribution",
-      description: "Supplying pre-assembled kits with flashlights",
-      type: "Aid",
-      date: "Oct 17, 2026",
-      team: ["SS"],
-    },
-    {
-      title: "Satellite Phones Delivery",
-      description: "To enable communication in remote areas",
-      type: "Aid",
-      date: "Nov 24, 2026",
-      team: ["JC", "SM"],
-    },
-    {
-      title: "Emergency Kit Distribution",
-      description: "Supplying pre-assembled kits with flashlights",
-      type: "Aid",
-      date: "Oct 17, 2026",
-      team: ["SS"],
+      order_name: "Emergency Kit Distribution",
+      company_name: "Humanitarian Supplies",
+      expected_delivery: "Oct 17, 2026",
+      pickup_address: "456 Aid Lane, Nairobi",
+      delivery_address: "Hospital Zone, Nairobi",
+      order_status: "assigned",
     },
   ];
 
-  const completedDeliveries = [
-    {
-      title: "Food Aid Distribution",
-      description: "Delivered to the local community",
-      type: "Aid",
-      date: "Sept 10, 2026",
-    },
-    {
-      title: "Medical Supplies Delivery",
-      description: "Provided to a remote health center",
-      type: "Materials",
-      date: "Aug 30, 2026",
-    },
-  ];
-
-  const pendingDeliveries = [
-    {
-      title: "Wildfire Support Logistics",
-      description: "Transporting water tankers, fire retardants",
-      type: "Materials",
-      date: "Nov 28, 2026",
-    },
-    {
-      title: "Solar Panel Delivery",
-      description: "Setting up solar kits for remote medical camps",
-      type: "Design",
-      date: "Dec 05, 2026",
-    },
-  ];
-
-  //Fetch active orders
+  // Fetch Active Orders
   const fetchActiveOrders = async () => {
     try {
       const res = await get_driver_active_orders(id);
-      setActiveOrders(res);
+      console.log("Active Orders", res);
+      setActiveOrders(res || []);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching active orders:", error);
+      setActiveOrders([]);
     }
   };
 
-  //Fetch completed orders
+  // Fetch Completed Orders
   const fetchCompletedOrders = async () => {
     try {
       const res = await get_driver_completed_orders(id);
-      setCompletedOrders(res);
+      console.log("Completed Orders", res);
+      setCompletedOrders(res || []);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching completed orders:", error);
+      setCompletedOrders([]);
     }
   };
 
-  const renderTabContent = () => {
-    let deliveries = [];
-    if (activeTab === "due") deliveries = upcomingDeliveries;
-    else if (activeTab === "completed") deliveries = completedDeliveries;
-    else if (activeTab === "pending") deliveries = pendingDeliveries;
+  // Fetch Pending Orders
+  const fetchPendingOrders = async () => {
+    try {
+      const res = await get_driver_pending_orders(id);
+      console.log("Pending Orders", res);
+      setPendingDeliveries(res || []);
+    } catch (error) {
+      console.error("Error fetching pending orders:", error);
+      setPendingDeliveries([]);
+    }
+  };
 
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {deliveries.map((delivery, index) => (
-          <div key={index} className="bg-white rounded-xl p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-medium mb-1">{delivery.title}</h3>
-                <p className="text-sm text-gray-500">{delivery.description}</p>
-              </div>
-              <button className="text-gray-400">...</button>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs ${
-                    delivery.type === "Aid"
-                      ? "bg-blue-100 text-blue-900"
-                      : delivery.type === "Materials"
-                      ? "bg-orange-100 text-orange-900"
-                      : "bg-gray-100 text-gray-900"
-                  }`}
-                >
-                  {delivery.type}
-                </span>
-                <span className="text-sm text-gray-500">{delivery.date}</span>
-              </div>
-              <div className="flex -space-x-2">
-                {delivery.team?.map((member, idx) => (
-                  <div
-                    key={idx}
-                    className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm border-2 border-white"
-                  >
-                    {member}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+  // Fetch data on mount
+  useEffect(() => {
+    fetchActiveOrders();
+    fetchCompletedOrders();
+    fetchPendingOrders();
+  }, []);
+
+  const renderTabContent = () => {
+    if (activeTab === "due") {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {activeOrders.map((order, index) => (
+            <ActiveOrders key={index} orders={order} />
+          ))}
+        </div>
+      );
+    } else if (activeTab === "completed") {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {completedOrders.map((order, index) => (
+            <ActiveOrders key={index} orders={order} />
+          ))}
+        </div>
+      );
+    } else if (activeTab === "pending") {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pendingDeliveries.map((order, index) => (
+            <ActiveOrders key={index} orders={order} />
+          ))}
+        </div>
+      );
+    }
   };
 
   return (
@@ -329,6 +293,6 @@ export default function driverDashboard({ driver }) {
           {renderTabContent()}
         </div>
       </div>
-    </DashboardLayout >
+    </DashboardLayout>
   );
 }
