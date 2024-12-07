@@ -69,7 +69,7 @@ export default function ActivateSupplierAccount({ fetchSupplier }) {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full space-y-8 bg-white p-10 rounded-2xl shadow-lg relative">
         <button 
-          onClick={() => navigate('/')} 
+          // onClick={() => navigate('/')} 
           className="absolute right-6 top-6 text-gray-400 hover:text-gray-600"
         >
           <X className="w-6 h-6" />

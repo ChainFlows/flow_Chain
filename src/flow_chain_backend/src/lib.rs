@@ -1445,6 +1445,55 @@ fn assign_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
     })
 }
 
+// Function to assign supplier and change bid status
+#[ic_cdk::update]
+fn assign_bid_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
+    ORDERS.with(|orders| {
+        let mut orders = orders.borrow_mut();
+
+        // Fetch all bids
+        let bids = BIDS.with(|bids| {
+            let bids = bids.borrow();
+            bids.iter().map(|(_key, value)| value.clone()).collect::<Vec<_>>()
+        });
+
+        // Find the bid matching the order_id and supplier_id
+        let bid = BIDS.with(|bids| {
+            let bids_borrowed = bids.borrow();
+            bids_borrowed
+                .iter()
+                .find(|(_key, value)| value.order_id == order_id && value.supplier_id == supplier_id)
+                .map(|(_key, value)| value.clone()) // Clone the bid value if necessary
+                .ok_or_else(|| format!("Bid not found for order_id={} and supplier_id={}", order_id, supplier_id))
+        });
+
+        match bid {
+            Ok(bid) => {
+                // Update the bid status to "approved"
+                let mut bid = bid.clone();
+                bid.status = BidStatus::Approved;
+                BIDS.with(|bids| {
+                    bids.borrow_mut().insert(bid.id, bid.clone());
+                });
+            }
+            Err(e) => return Err(e),
+        }
+
+        // Update the corresponding order
+        match orders.get(&order_id) {
+            Some(existing_order) => {
+                let mut order = existing_order.clone();
+                order.order_status = "current".to_string();
+                order.supplier_id = Some(supplier_id.to_string());
+                orders.insert(order_id, order.clone());
+
+                Ok(order)
+            }
+            None => Err(format!("Order with id={} not found", order_id)),
+        }
+    })
+}
+
 //   //   assign driver to order
 //   assignDriver: update(
 //     [text, text],

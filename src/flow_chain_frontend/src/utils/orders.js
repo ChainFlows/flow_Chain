@@ -91,6 +91,19 @@ export async function assignSupplier(orderId, supplierId) {
   }
 }
 
+// assign_bid_supplier
+export async function assignBidSupplier(orderId, supplierId) {
+  try {
+    return await flow_chain_backend.assign_bid_supplier(orderId, supplierId);
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return {};
+  }
+}
+
 export async function markOrderAsCompleted(completionPayload) {
   try {
     return await window.canister.flowchain.markOrderAsCompleted(

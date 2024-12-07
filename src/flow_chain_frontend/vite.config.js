@@ -20,6 +20,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
+        // target: "https://ic0.app", // for mainnet replica
         target: "http://127.0.0.1:4943",
         changeOrigin: true,
       },
