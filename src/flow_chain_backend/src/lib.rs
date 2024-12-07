@@ -1435,6 +1435,7 @@ fn assign_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
             Some(existing_order) => {
                 let mut order = existing_order.clone();
                 order.order_status = "current".to_string();
+<<<<<<< HEAD
                 order.supplier_id = Some(supplier_id.to_string());
                 orders.insert(order_id, order.clone());
 
@@ -1484,6 +1485,8 @@ fn assign_bid_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String>
             Some(existing_order) => {
                 let mut order = existing_order.clone();
                 order.order_status = "current".to_string();
+=======
+>>>>>>> 0d6529969bdba27e4c0461d22a5c63a1a62b4ad6
                 order.supplier_id = Some(supplier_id.to_string());
                 orders.insert(order_id, order.clone());
 

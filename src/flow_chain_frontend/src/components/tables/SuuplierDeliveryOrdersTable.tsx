@@ -11,10 +11,8 @@ import {
   assignDriverFunc,
   createQuotationFunc,
   fetchSupplierDrivers,
-  saveBid,
   updateOrderStatusFunc,
 } from "../../pages/dashboard/utils/supplierUtils";
-import CreateBidModal from "../modals/supplier/CreateBidModal";
 import AssignDriverModal from "../modals/supplier/AssignDriverModal";
 import CreateQuotationModal from "../modals/supplier/CreateQuotationModal";
 // Nice
@@ -40,38 +38,31 @@ interface Order {
   order_status: OrderStatus;
 }
 
-export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
+export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpdate }) {
   const [activeTab, setActiveTab] = useState<
-
-    "Listings" | "New" | "pending" | "completed"
+    "Listings" | "New" | "current" | "completed"
   >("Listings");
 
   const [orderId, setOrderId] = useState(0);
-  const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
+  const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] = useState(false);
   const [isAssignDriverModalOpen, setIsAssignDriverModalOpen] = useState(false);
-
-  const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] =
-    useState(false);
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(false);
 
   console.log("The orders are: ", data);
-  const { completedOrders, pendingOrders, newOrders, orderListings } = data;
-  // merge all the orders to one array from completedOrders,pendingOrders,newOrders, arrays
+  const { completedOrders, currentOrders, newOrders, orderListings } = data;
+  // merge all the orders to one array from completedOrders,currentOrders,newOrders, arrays
 
   const ordersList = [
     ...completedOrders,
-    ...pendingOrders,
+    ...currentOrders,
     ...newOrders,
     ...orderListings,
   ];
 
-  const saveBidFun = (data) => {
-    saveBid(data, setLoading);
-  };
-
   const assignDriverFun = (orderId, driverId) => {
     assignDriverFunc(orderId, driverId, setLoading);
+
   };
 
   const saveQuotationFun = (data) => {
@@ -90,39 +81,64 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
   }));
 
   // use match to set filtered data per the activeTab with the array from data
-  const groupedOrders = () => {
+  const orderedOrders = () => {
     switch (activeTab) {
       case "Listings":
         return orderListings;
       case "New":
         return newOrders;
-      case "pending":
-        return pendingOrders;
+      case "current":
+        return currentOrders;
       case "completed":
         return completedOrders;
       default:
         return [];
     }
   };
-  // filter to get ordders with order type "shipping"
-  const filteredOrders = () =>
-    groupedOrders().filter((order) => order.order_type === "shipping");
+    
+    const filteredOrders = () => {
+        const orders = ordersList;
+        return orders?.filter((order) => order.order_type === "delivery");
+    };
 
   // const orders_: Order[] = orders;
   console.log("The orders are: ", orders_);
   // const filteredOrders = orders_.filter(order => order.status === activeTab );
   // const filteredOrders = orders_.filter(order => order.status === activeTab);
   console.log("filteredOrders: ", filteredOrders());
-  const getStatusIcon = (status: Order["status"]) => {
+
+  const getStatusDropdown = (
+  currentStatus: OrderStatus,
+  onChangeStatus: (newStatus: OrderStatus) => void
+) => {
+  const statusOptions: OrderStatus[] = ["New", "pending", "completed"];
+
+  return (
+    <select
+      value={currentStatus}
+      onChange={(e) => onChangeStatus(e.target.value as OrderStatus)}
+      className="bg-transparent border-none text-sm capitalize focus:ring-0"
+    >
+      {statusOptions.map((status) => (
+        <option key={status} value={status}>
+          {status}
+        </option>
+      ))}
+    </select>
+  );
+  };
+  
+  const getStatusIcon = (status: Order['status']) => {
     switch (status) {
-      case "New":
+      case 'New':
         return <Package className="w-5 h-5 text-blue-500" />;
-      case "pending":
+      case 'pending':
         return <Clock className="w-5 h-5 text-orange-500" />;
-      case "completed":
+      case 'completed':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
     }
   };
+
 
   const getPriorityColor = (priority: Order["priority"]) => {
     switch (priority) {
@@ -142,10 +158,9 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
   return (
     <div className="bg-white rounded-3xl p-8 mb-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold">Items Shipping Orders</h2>
+        <h2 className="text-lg font-semibold">Items Purchase Orders</h2>
         <div className="flex gap-2">
-          {(["Listings", "New", "pending", "completed"] as const).map(
- 
+          {(["Listings", "New", "current", "completed"] as const).map(
             (status) => (
               <button
                 key={status}
@@ -197,7 +212,7 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
                   CATEGORY
                 </th>
                 <th className="pb-4 font-medium text-gray-500 w-32">STATUS</th>
-                <th className="pb-4 font-medium text-gray-500 w-40">ACTIONS</th>
+                <th className="pb-4 font-medium text-gray-500 w-32">ACTIONS</th>
                 <th className="pb-4 w-20"></th>
               </tr>
             </thead>
@@ -250,13 +265,15 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
                     </div>
                   </td>
                   <td className="py-4">
-                    <div className="flex items-center gap-2">
-                      {getStatusIcon(order.order_status)}
-                      <span className="text-sm capitalize">
-                        {order.order_status}
-                      </span>{" "}
-                    </div>
-                  </td>
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(order.order_status)}
+                    {getStatusDropdown(order.order_status, (newStatus) =>
+                      handleChangeOrderStatus(order.id, newStatus)
+                      )}
+                    <span className="sr-only">{order.order_status}</span> {/* Hidden text for accessibility */}
+                  </div>
+                </td>
+
 
                   <td className="py-4 min-w-20">
                     <div className="flex justify-end gap-2">
@@ -264,23 +281,22 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
                         onClick={() => {
                           setOrderId(order.id);
                           activeTab === "Listings"
-                            ? setIsCreateBidModalOpen(true)
+                            ? setIsCreateQuotationModalOpen(true)
                             : activeTab === "New"
                             ? setIsAssignDriverModalOpen(true)
-
-                            : activeTab === "pending"
-                            ? handleChangeOrderStatus(order.id, "Completed")
+                            : activeTab === "current"
+                            ? console.log("Update Status")
                             : console.log("View Details");
                         }}
                         className="px-2 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
                       >
                         {activeTab === "Listings"
-                          ? "Add Bid"
+                          ? "Add Quote"
                           : activeTab === "New"
                           ? "Assign Driver"
-                          : activeTab === "pending"
-                          ? "mark Completed"
-                          : ""}
+                          : activeTab === "current"
+                          ? "Update Status"
+                          : "View Details"}
                       </button>
                       <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
                         <Trash className="w-4 h-4 text-gray-400" />
@@ -293,12 +309,6 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
           </table>
         </div>
       </div>
-      <CreateBidModal
-        orderId={orderId}
-        save={saveBidFun}
-        isOpen={isCreateBidModalOpen}
-        onClose={() => setIsCreateBidModalOpen(false)}
-      />
       <CreateQuotationModal
         orderId={orderId}
         save={saveQuotationFun}
