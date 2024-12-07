@@ -1434,6 +1434,7 @@ fn assign_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
         match orders.get(&order_id) {
             Some(existing_order) => {
                 let mut order = existing_order.clone();
+                order.order_status = "current".to_string();
                 order.supplier_id = Some(supplier_id.to_string());
                 orders.insert(order_id, order.clone());
 

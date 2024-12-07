@@ -30,6 +30,7 @@ import CreateBidModal from "../../components/modals/supplier/CreateBidModal";
 import SupplierDeliveryOrdersTable from "../../components/tables/SuplierDeliveryOrdersTable";
 import AddDriverModal from "../../components/modals/supplier/AddDriverModal";
 
+
 export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
   const [loading, setLoading] = useState(false);
@@ -200,6 +201,20 @@ export default function SupplierDashboard({ supplier }) {
             data={{
               completedOrders: completedOrders,
               pendingOrders: pendingOrders,
+              newOrders: newOrders,
+              orderListings: orderListings,
+            }}
+            supplier_id={id}
+            setUpdate={setUpdate}
+            // bidModal={setIsCreateBidModalOpen}
+            // setOrderId={setOrderId}
+          />
+        </div>
+        <div>
+          <SupplierDeliveryOrdersTable
+            data={{
+              completedOrders: completedOrders,
+              currentOrders: currentOrders,
               newOrders: newOrders,
               orderListings: orderListings,
             }}
