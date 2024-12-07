@@ -54,7 +54,7 @@ const DriverRegistrationForm = ({ fetchDriver }) => {
       <ToastContainer />
       <div className="max-w-2xl w-full space-y-8 bg-white p-10 rounded-2xl shadow-lg relative">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai")}
           className="absolute right-6 top-6 text-gray-400 hover:text-gray-600"
         >
           ✕

@@ -9,7 +9,11 @@ export default function OrdersStatus({ orders, bids }) {
     const ordersmap = orders
       ?.map((order) => {
         // Find the corresponding bid for the order
-        const bid = bids?.find((b) => b.order_id === order.id);
+        const bid = Array.isArray(bids) ? bids.find((b) => b.order_id === order.id) : null;
+        console.log("bidsPid", bids);
+
+        
+        
         console.log("peark", order, bid);
 
         // If a matching bid is found, create the object with the required fields

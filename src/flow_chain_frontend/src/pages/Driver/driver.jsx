@@ -5,7 +5,7 @@ import { get_driver_by_owner } from "../../utils/driver";
 import DriverRegistrationForm from "../../components/forms/DriverRegistrationForm";
 import DriverDashboard from "./driverDashboard";
 
-const Driver = () => {
+const   Driver = () => {
   const [driver, setDriver] = useState({});
   const [loading, setLoading] = useState(false);
   const { loginWithII,  isAuthenticated } =
