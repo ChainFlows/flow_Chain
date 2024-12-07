@@ -125,12 +125,23 @@ export default function BidModal({ isOpen, onClose, save2,order }) {
           </div>
 
           <div className="flex-1 space-y-6">
-            <div>
+
+            {/* Figure this out to show MM-DD-YYYY format */}
+            {/* <div>
               <label className="block text-lg font-bold text-gray-900 mb-2">
                 Bid Created and Update Time
               </label>
-              <div className="text-base text-gray-700"> created_at: {selectedBid?.created_at}  updated_at: {selectedBid?.updated_at}  </div>
-            </div>
+              <div className="text-base text-gray-700">
+                created_at: {selectedBid?.created_at 
+                  ? new Date(selectedBid.created_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }) 
+                  : 'N/A'}
+                <br />
+                updated_at: {selectedBid?.updated_at 
+                  ? new Date(selectedBid.updated_at).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }) 
+                  : 'N/A'}
+              </div>
+
+            </div> */}
 
             <div>
               <label className="block text-lg font-bold text-gray-900 mb-2">
@@ -155,14 +166,14 @@ export default function BidModal({ isOpen, onClose, save2,order }) {
               <div className="text-base text-gray-700">{selectedBid?.order_id.toString()}</div>
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-lg font-bold text-gray-900 mb-2">
                 Bid Status
-              </label>
-              <span className={`px-3 py-1 rounded-full text-sm capitalize ${getStatusColor(selectedBid?.status)}`}>
+              </label> */}
+              {/* <span className={`px-3 py-1 rounded-full text-sm capitalize ${getStatusColor(selectedBid?.status)}`}>
                 {selectedBid?.status || "pending"}
-              </span>
-            </div>
+              </span> */}
+            {/* </div> */}
           </div>
         </div>
 
