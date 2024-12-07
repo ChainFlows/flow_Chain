@@ -1,4 +1,8 @@
 // supplierDashboardFunctions.js
+import {
+  add_driver_to_supply_company,
+  get_all_drivers,
+} from "../../../utils/driver";
 import { getAllItemsBySupplier } from "../../../utils/items";
 import { assignDriver, updateOrderStatus } from "../../../utils/orders";
 import {
@@ -65,11 +69,11 @@ export const fetchCompletedOrders = async (
   }
 };
 
-export const fetchCurrentOrders = async (setCurrentOrders, setLoading, id) => {
+export const fetchPendingOrders = async (setPendingOrders, setLoading, id) => {
   try {
     setLoading(true);
     const orders = await getSupplyCompanyActiveOrders(id);
-    setCurrentOrders(orders);
+    setPendingOrders(orders);
   } catch (error) {
     console.error(error);
   } finally {
@@ -341,7 +345,7 @@ export const fetchSupplierBids = async (setBids, setLoading, supplierId) => {
   try {
     setLoading(true);
     const bids = await getSupplierBids(supplierId);
-    setBids(bids);
+    setBids(bids.Ok);
   } catch (error) {
     console.error(error);
   } finally {
@@ -376,6 +380,37 @@ export const createQuotationFunc = async (data, setLoading) => {
   } catch (error) {
     console.error(error);
     // toast(<NotificationError text="Failed to create quotation." />);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// get all drivers
+export const fetchAllDrivers = async (setDrivers, setLoading) => {
+  try {
+    setLoading(true);
+    const drivers = await get_all_drivers();
+    setDrivers(drivers);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// add_driver_to_supply_company;
+export const addDriverToSupplyCompany = async (
+  supplierId,
+  driverId,
+  setLoading
+) => {
+  try {
+    setLoading(true);
+    await add_driver_to_supply_company(supplierId, driverId);
+    // toast(<NotificationSuccess text="Driver added successfully." />);
+  } catch (error) {
+    console.error(error);
+    // toast(<NotificationError text="Failed to add driver." />);
   } finally {
     setLoading(false);
   }

@@ -41,7 +41,7 @@ export default function CompanyOverviewPage({ client }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
   const [loading, setLoading] = useState(false);
   const [completedOrders, setCompletedOrders] = useState([]);
-  const [currentOrders, setCurrentOrders] = useState([]);
+  const [pendingOrders, setPendingOrders] = useState([]);
   const [newOrders, setNewOrders] = useState([]);
   const [tab, setTab] = useState("new");
 
@@ -73,7 +73,7 @@ export default function CompanyOverviewPage({ client }) {
       setLoading(true);
       await assignSupplier(orderId, supplierId);
       fetchNewOrders();
-      fetchCurrentOrders();
+      fetchPendingOrders();
       toast(<NotificationSuccess text="Supplier assigned successfully." />);
       setLoading(false);
     } catch (error) {
@@ -139,10 +139,10 @@ export default function CompanyOverviewPage({ client }) {
   });
 
   // get getClientCompanyActiveOrders
-  const fetchCurrentOrders = useCallback(async () => {
+  const fetchPendingOrders = useCallback(async () => {
     try {
       setLoading(true);
-      setCurrentOrders(await getClientCompanyActiveOrders(client.id));
+      setPendingOrders(await getClientCompanyActiveOrders(client.id));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -152,13 +152,13 @@ export default function CompanyOverviewPage({ client }) {
 
   useEffect(() => {
     fetchCompletedOrders();
-    fetchCurrentOrders();
+    fetchPendingOrders();
     fetchNewOrders();
     // fetchOrders();
   }, []);
 
   console.log("new", newOrders);
-  console.log("current", currentOrders);
+  console.log("pending", pendingOrders);
   console.log("completed", completedOrders);
 
   return (
@@ -390,7 +390,7 @@ export default function CompanyOverviewPage({ client }) {
                                   </>
                                 ) : tab === "maintainance" ? (
                                   <>
-                                    {currentOrders.map((order, index) => (
+                                    {pendingOrders.map((order, index) => (
                                       <div
                                         key={index}
                                         className="flex flex-row justify-center w-full p-2 bg-white-A700_01 shadow-xs rounded-[12px]"

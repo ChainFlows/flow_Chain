@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   Box,
   BarChart2,
@@ -10,27 +10,59 @@ import {
   FileText,
   Link2,
   Grid,
-} from 'lucide-react';
-import DashboardHeader from './DashboardHeader';
+} from "lucide-react";
+import DashboardHeader from "./DashboardHeader";
 
-export default function DashboardLayout({dataClient, children }) {
+export default function DashboardLayout({ dataClient, children }) {
   // const location = useLocation();
 
   const menuItems = [
-    { icon: BarChart2, label: 'Dashboard', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: FileText, label: 'Reports', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Package, label: 'Products', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Truck, label: 'Delivery', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Users, label: 'Users', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Link2, label: 'Integrations', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Settings, label: 'Settings', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
-    { icon: Grid, label: 'Design pages', path: '/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai' },
+    {
+      icon: BarChart2,
+      label: "Dashboard",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
+    {
+      icon: FileText,
+      label: "Reports",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
+    {
+      icon: Package,
+      label: "Products",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
+    {
+      icon: Truck,
+      label: "Delivery",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
+    {
+      icon: Users,
+      label: "Users",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
+    {
+      icon: Link2,
+      label: "Integrations",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
+    {
+      icon: Settings,
+      label: "Settings",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
+    {
+      icon: Grid,
+      label: "Design pages",
+      path: "/clients?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai",
+    },
   ];
 
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar - Added sticky positioning */}
-      <div className="w-64 bg-white border-r flex flex-col sticky top-0 h-screen">
+      {/* <div className="w-64 bg-white border-r flex flex-col sticky top-0 h-screen">
         <div className="p-4 border-b">
           <Link to="/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai" className="flex items-center gap-2">
             <Box className="w-6 h-6 text-blue-900" />
@@ -61,13 +93,12 @@ export default function DashboardLayout({dataClient, children }) {
 
         <div className="p-4 mt-auto">
           <button className="w-full px-4 py-2 bg-blue-900 text-white rounded-lg flex items-center justify-center gap-2">
-            {/* Get design → */}
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col">
         <DashboardHeader dataClient={dataClient} />
         <main className="flex-1 overflow-auto bg-gray-50">{children}</main>
       </div>
