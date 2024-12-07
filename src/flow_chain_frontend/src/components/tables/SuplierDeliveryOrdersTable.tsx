@@ -11,10 +11,8 @@ import {
   assignDriverFunc,
   createQuotationFunc,
   fetchSupplierDrivers,
-  saveBid,
   updateOrderStatusFunc,
 } from "../../pages/dashboard/utils/supplierUtils";
-import CreateBidModal from "../modals/supplier/CreateBidModal";
 import AssignDriverModal from "../modals/supplier/AssignDriverModal";
 import CreateQuotationModal from "../modals/supplier/CreateQuotationModal";
 // Nice
@@ -40,18 +38,19 @@ interface Order {
   order_status: OrderStatus;
 }
 
-export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
+export default function SupplierDeliveryOrdersTable({
+  data,
+  supplier_id,
+  setUpdate,
+}) {
   const [activeTab, setActiveTab] = useState<
-
     "Listings" | "New" | "pending" | "completed"
   >("Listings");
 
   const [orderId, setOrderId] = useState(0);
-  const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
-  const [isAssignDriverModalOpen, setIsAssignDriverModalOpen] = useState(false);
-
   const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] =
     useState(false);
+  const [isAssignDriverModalOpen, setIsAssignDriverModalOpen] = useState(false);
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -65,10 +64,6 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
     ...newOrders,
     ...orderListings,
   ];
-
-  const saveBidFun = (data) => {
-    saveBid(data, setLoading);
-  };
 
   const assignDriverFun = (orderId, driverId) => {
     assignDriverFunc(orderId, driverId, setLoading);
@@ -104,15 +99,17 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
         return [];
     }
   };
-  // filter to get ordders with order type "shipping"
-  const filteredOrders = () =>
-    groupedOrders().filter((order) => order.order_type === "shipping");
+
+  const filteredOrders = () => {
+    return groupedOrders()?.filter((order) => order.order_type === "delivery");
+  };
 
   // const orders_: Order[] = orders;
   console.log("The orders are: ", orders_);
   // const filteredOrders = orders_.filter(order => order.status === activeTab );
   // const filteredOrders = orders_.filter(order => order.status === activeTab);
   console.log("filteredOrders: ", filteredOrders());
+
   const getStatusIcon = (status: Order["status"]) => {
     switch (status) {
       case "New":
@@ -142,10 +139,9 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
   return (
     <div className="bg-white rounded-3xl p-8 mb-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold">Items Shipping Orders</h2>
+        <h2 className="text-lg font-semibold">Items Purchase Orders</h2>
         <div className="flex gap-2">
           {(["Listings", "New", "pending", "completed"] as const).map(
- 
             (status) => (
               <button
                 key={status}
@@ -255,6 +251,7 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
                       <span className="text-sm capitalize">
                         {order.order_status}
                       </span>{" "}
+                      {/* Hidden text for accessibility */}
                     </div>
                   </td>
 
@@ -264,22 +261,21 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
                         onClick={() => {
                           setOrderId(order.id);
                           activeTab === "Listings"
-                            ? setIsCreateBidModalOpen(true)
+                            ? setIsCreateQuotationModalOpen(true)
                             : activeTab === "New"
                             ? setIsAssignDriverModalOpen(true)
-
                             : activeTab === "pending"
-                            ? handleChangeOrderStatus(order.id, "Completed")
+                            ? handleChangeOrderStatus(order.id, "completed")
                             : console.log("View Details");
                         }}
                         className="px-2 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
                       >
                         {activeTab === "Listings"
-                          ? "Add Bid"
+                          ? "Add Quote"
                           : activeTab === "New"
                           ? "Assign Driver"
                           : activeTab === "pending"
-                          ? "mark Completed"
+                          ? "Mark Completed"
                           : ""}
                       </button>
                       <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
@@ -293,12 +289,6 @@ export default function SupplierOrdersTable({ data, supplier_id, setUpdate }) {
           </table>
         </div>
       </div>
-      <CreateBidModal
-        orderId={orderId}
-        save={saveBidFun}
-        isOpen={isCreateBidModalOpen}
-        onClose={() => setIsCreateBidModalOpen(false)}
-      />
       <CreateQuotationModal
         orderId={orderId}
         save={saveQuotationFun}

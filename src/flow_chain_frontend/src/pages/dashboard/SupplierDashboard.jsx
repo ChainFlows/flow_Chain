@@ -10,7 +10,7 @@ import {
   fetchNewOrderListings,
   fetchNewOrders,
   fetchCompletedOrders,
-  fetchCurrentOrders,
+  fetchPendingOrders,
   fetchSupplierBids,
   fetchAllWarehouseInventory,
   payDriverFunc,
@@ -18,23 +18,30 @@ import {
   saveWarehouse,
   fetchSupplierItems,
   saveBid,
+  fetchAllDrivers,
+  addDriverToSupplyCompany,
+  fetchSupplierDrivers,
 } from "./utils/supplierUtils";
 import SupplierOrdersTable from "../../components/tables/SupplierShippingOrdersTable";
 import SupplierItemsTable from "../../components/tables/SupplierItemsTable";
 import CreateItemModal from "../../components/modals/client/CreateItemModal";
 import CreateWarehouseModal from "../../components/modals/supplier/CreateWarehouseModal";
 import CreateBidModal from "../../components/modals/supplier/CreateBidModal";
-import SupplierDeliveryOrdersTable from "../../components/tables/SuuplierDeliveryOrdersTable";
+import SupplierDeliveryOrdersTable from "../../components/tables/SuplierDeliveryOrdersTable";
+import AddDriverModal from "../../components/modals/supplier/AddDriverModal";
+
 
 export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
   const [loading, setLoading] = useState(false);
   const [orderListings, setOrderListings] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
-  const [currentOrders, setCurrentOrders] = useState([]);
+  const [pendingOrders, setPendingOrders] = useState([]);
   const [newOrders, setNewOrders] = useState([]);
   const [allWarehouseInventory, setAllWarehouseInventory] = useState([]);
   const [bids, setBids] = useState([]);
+  const [drivers, setDrivers] = useState([]);
+  const [supplierDrivers, setSupplierDrivers] = useState([]);
   const [items, setItems] = useState([]);
   const [tab, setTab] = useState("new");
   const [orderId, setOrderId] = useState(0);
@@ -42,6 +49,7 @@ export default function SupplierDashboard({ supplier }) {
   const [isCreateWarehouseModalOpen, setIsCreateWarehouseModalOpen] =
     useState(false);
   const [isCreateBidModalOpen, setIsCreateBidModalOpen] = useState(false);
+  const [isAddDriverModalOpen, setIsAddDriverModalOpen] = useState(false);
   const [update, setUpdate] = useState(false);
 
   console.log("supplier2", supplier);
@@ -51,16 +59,18 @@ export default function SupplierDashboard({ supplier }) {
   useEffect(() => {
     fetchNewOrders(setNewOrders, setLoading, id);
     fetchCompletedOrders(setCompletedOrders, setLoading, id);
-    fetchCurrentOrders(setCurrentOrders, setLoading, id);
+    fetchPendingOrders(setPendingOrders, setLoading, id);
     fetchNewOrderListings(setOrderListings, setLoading);
     fetchSupplierBids(setBids, setLoading, id);
+    fetchAllDrivers(setDrivers, setLoading);
+    fetchSupplierDrivers(setSupplierDrivers, setLoading, id);
     fetchAllWarehouseInventory(setAllWarehouseInventory, setLoading, id);
     fetchSupplierItems(setItems, setLoading, id);
   }, [update]);
 
   console.log("newOrders", newOrders);
   console.log("completedOrders", completedOrders);
-  console.log("currentOrders", currentOrders);
+  console.log("pendingOrders", pendingOrders);
   console.log("orderListings", orderListings);
   console.log("bids", bids);
   console.log("allWarehouseInventory", allWarehouseInventory);
@@ -103,51 +113,16 @@ export default function SupplierDashboard({ supplier }) {
     },
   ];
 
-  const products = [
-    {
-      id: "01",
-      name: "iPhone 15 Pro Max",
-      image:
-        "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=100&h=100&fit=crop",
-      category: "Smartphones",
-      totalSales: 90,
-      sales: 98910.0,
-      stock: 24,
-    },
-    {
-      id: "05",
-      name: "Google Pixel 8",
-      image:
-        "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=100&h=100&fit=crop",
-      category: "Smartphones",
-      totalSales: 54,
-      sales: 32348.5,
-      stock: 16,
-    },
-    {
-      id: "08",
-      name: "iPad Air",
-      image:
-        "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=100&h=100&fit=crop",
-      category: "Tablets",
-      totalSales: 35,
-      sales: 27965.0,
-      stock: 8,
-    },
-    {
-      id: "13",
-      name: "Samsung Galaxy S24",
-      image:
-        "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=100&h=100&fit=crop",
-      category: "Smartphones",
-      totalSales: 20,
-      sales: 19980.0,
-      stock: 49,
-    },
-  ];
+  const unRecruitedDrivers = drivers.filter((driver) => {
+    return !supplierDrivers.some((myDriver) => myDriver.id === driver.id);
+  });
+
+  console.log("unRecruitedDrivers", unRecruitedDrivers);
 
   const saveItemFun = (data) => {
-    saveItem(data, setLoading, id);
+    saveItem(data, setLoading, id).then(() => {
+      fetchSupplierItems(setItems, setLoading, id);
+    });
   };
 
   const saveWarehouseFun = (data) => {
@@ -155,7 +130,13 @@ export default function SupplierDashboard({ supplier }) {
   };
 
   const saveBidFun = (data) => {
-    saveBid(data, setLoading, id);
+    saveBid(data, setLoading);
+  };
+
+  const saveDriverFun = async (driverId) => {
+    addDriverToSupplyCompany(id, driverId, setLoading).then(() => {
+      fetchAllDrivers(setDrivers, setLoading);
+    });
   };
 
   return (
@@ -180,6 +161,13 @@ export default function SupplierDashboard({ supplier }) {
             >
               Create Warehouse
             </button>
+
+            <button
+              onClick={() => setIsAddDriverModalOpen(true)}
+              className="px-6 py-2 bg-blue-900 text-white rounded-full hover:bg-blue-800 transition-colors"
+            >
+              Recruit Driver
+            </button>
           </div>
           {/* <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-2xl text-sm border border-gray-200">
             Last 30 days <ChevronDown className="w-4 h-4" />
@@ -198,7 +186,21 @@ export default function SupplierDashboard({ supplier }) {
           <SupplierOrdersTable
             data={{
               completedOrders: completedOrders,
-              currentOrders: currentOrders,
+              pendingOrders: pendingOrders,
+              newOrders: newOrders,
+              orderListings: orderListings,
+            }}
+            supplier_id={id}
+            setUpdate={setUpdate}
+            // bidModal={setIsCreateBidModalOpen}
+            // setOrderId={setOrderId}
+          />
+        </div>
+        <div>
+          <SupplierDeliveryOrdersTable
+            data={{
+              completedOrders: completedOrders,
+              pendingOrders: pendingOrders,
               newOrders: newOrders,
               orderListings: orderListings,
             }}
@@ -232,7 +234,7 @@ export default function SupplierDashboard({ supplier }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <PopularCategories />
-          <OrdersStatus orders={currentOrders} bids={bids} />
+          <OrdersStatus orders={pendingOrders} bids={bids} />
         </div>
 
         <div className="mt-8 text-center text-sm text-gray-500">
@@ -253,6 +255,12 @@ export default function SupplierDashboard({ supplier }) {
           save={saveBidFun}
           isOpen={isCreateBidModalOpen}
           onClose={() => setIsCreateBidModalOpen(false)}
+        />
+        <AddDriverModal
+          drivers={unRecruitedDrivers}
+          recruitDriver={saveDriverFun}
+          isOpen={isAddDriverModalOpen}
+          onClose={() => setIsAddDriverModalOpen(false)}
         />
       </div>
     </DashboardLayout>
