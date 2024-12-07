@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 
-// import {flow_chain_backend} from "../../../../declarations/flow_chain_backend";
 import ClientDashboard from "../dashboard/ClientDashboard";
 import Login from "./Login";
 import { useAuth } from "../../utils/auth";
