@@ -43,7 +43,7 @@ export default function CompanyOverviewPage({ supplier }) {
   const [loading, setLoading] = useState(false);
   const [orderListings, setOrderListings] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
-  const [currentOrders, setCurrentOrders] = useState([]);
+  const [pendingOrders, setPendingOrders] = useState([]);
   const [newOrders, setNewOrders] = useState([]);
   const [tab, setTab] = useState("new");
 
@@ -78,7 +78,7 @@ export default function CompanyOverviewPage({ supplier }) {
   //     setLoading(true);
   //     await assignDriver(id, driverId);
   //     fetchNewOrders();
-  //     fetchCurrentOrders();
+  //     fetchPendingOrders();
   //     // toast(<NotificationSuccess text="Driver assigned successfully." />);
   //   } catch (error) {
   //     console.log(error);
@@ -96,7 +96,7 @@ export default function CompanyOverviewPage({ supplier }) {
   //     await updateOrderStatus(orderId, status);
 
   //     fetchCompletedOrders();
-  //     fetchCurrentOrders();
+  //     fetchPendingOrders();
   //     // toast(<NotificationSuccess text="Order status updated successfully." />);
   //   } catch (error) {
   //     console.log(error);
@@ -163,11 +163,11 @@ export default function CompanyOverviewPage({ supplier }) {
     }
   });
 
-  const fetchCurrentOrders = useCallback(async () => {
+  const fetchPendingOrders = useCallback(async () => {
     try {
       setLoading(true);
       const orders = await getSupplyCompanyActiveOrders(id);
-      setCurrentOrders(orders);
+      setPendingOrders(orders);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -178,13 +178,13 @@ export default function CompanyOverviewPage({ supplier }) {
   useEffect(() => {
     fetchNewOrders();
     fetchCompletedOrders();
-    fetchCurrentOrders();
+    fetchPendingOrders();
     fetchNewOrderListings();
   }, []);
 
   console.log("newOrders", newOrders);
   console.log("completedOrders", completedOrders);
-  console.log("currentOrders", currentOrders);
+  console.log("pendingOrders", pendingOrders);
   console.log("orderListings", orderListings);
 
   return (
@@ -332,7 +332,7 @@ export default function CompanyOverviewPage({ supplier }) {
                               // color="blue_gray_900_0c"
                               //
                               className="ml-px rounded-[20px]"
-                              onClick={() => setTab("current")}
+                              onClick={() => setTab("pending")}
                             >
                               Current Orders
                             </button>
@@ -423,9 +423,9 @@ export default function CompanyOverviewPage({ supplier }) {
                                       </div>
                                     ))}
                                   </>
-                                ) : tab === "current" ? (
+                                ) : tab === "pending" ? (
                                   <>
-                                    {currentOrders.map((order, index) => (
+                                    {pendingOrders.map((order, index) => (
                                       <div
                                         key={index}
                                         className="flex flex-row justify-center w-full p-2 bg-white-A700_01 shadow-xs rounded-[12px]"

@@ -1,24 +1,21 @@
-import { X } from "lucide-react";
 import React, { useState } from "react";
 
-interface AssignDriverModalProps {
-  orderId: number;
+interface AddDriverModalProps {
+  drivers: any[];
   isOpen: boolean;
   onClose: () => void;
-  drivers: any[];
-  assignDriver: (orderId: number, driverId: number) => void;
+  recruitDriver: (driverId: number) => void;
 }
 
-const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
-  orderId,
+const AddDriverModal: React.FC<AddDriverModalProps> = ({
+  drivers,
   isOpen,
   onClose,
-  drivers,
-  assignDriver,
+  recruitDriver,
 }) => {
-  const handleSubmit = (id) => {
-    assignDriver(orderId, id);
-  };
+  //   const [selectedDriverId, setSelectedDriverId] = useState<number | null>(null)
+
+  console.log("AddDriverModal.tsx: drivers", drivers);
 
   if (!isOpen) return null;
 
@@ -29,10 +26,10 @@ const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
           onClick={onClose}
           className="absolute right-6 top-6 text-gray-400 hover:text-gray-600"
         >
-          <X className="w-6 h-6" />
+          <span className="w-6 h-6">X</span>
         </button>
 
-        <h2 className="text-2xl font-semibold mb-6">Assign Driver</h2>
+        <h2 className="text-2xl font-semibold mb-6">Recruit Driver</h2>
 
         <form className="space-y-6">
           <div className="overflow-hidden">
@@ -82,13 +79,10 @@ const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
                         <td className="py-4 min-w-20">
                           <button
                             type="button"
-                            onClick={() => {
-                              handleSubmit(driver.id);
-                              onClose();
-                            }}
+                            onClick={() => recruitDriver(driver.id)}
                             className="px-4 py-2 text-white bg-blue-600 rounded-full hover:bg-blue-700 transition-colors"
                           >
-                            Assign
+                            Recruit
                           </button>
                         </td>
                       </tr>
@@ -122,4 +116,4 @@ const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
   );
 };
 
-export default AssignDriverModal;
+export default AddDriverModal;

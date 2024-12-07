@@ -8,6 +8,9 @@ export default function OrdersStatus({ orders, bids }) {
     // Assuming orders and bids are arrays of objects received from the backend
     const ordersmap = orders
       ?.map((order) => {
+        if (!order.supplier_id[0]) {
+          return null;
+        }
         // Find the corresponding bid for the order
         const bid = bids?.find((b) => b.order_id === order.id);
         console.log("peark", order, bid);
@@ -104,7 +107,7 @@ export default function OrdersStatus({ orders, bids }) {
       </div>
 
       <div className="space-y-6">
-        {ordersList.map((order, index) => (
+        {ordersList?.map((order, index) => (
           <div key={index} className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center">
