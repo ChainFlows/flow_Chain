@@ -25,7 +25,7 @@ export default function BidModal({ isOpen, onClose, save2,order }) {
   const [loading, setLoading] = useState(false);
 
 
-  const {id, order_name} = order;
+  const id = order;
 
   console.log("const order is: ", order);
   console.log("const id is: ", id);
