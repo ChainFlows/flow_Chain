@@ -1483,7 +1483,7 @@ fn assign_bid_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String>
         match orders.get(&order_id) {
             Some(existing_order) => {
                 let mut order = existing_order.clone();
-                order.order_status = "current".to_string();
+                order.order_status = "Assigned".to_string();
                 order.supplier_id = Some(supplier_id.to_string());
                 orders.insert(order_id, order.clone());
 
@@ -1493,6 +1493,8 @@ fn assign_bid_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String>
         }
     })
 }
+
+
 
 //   //   assign driver to order
 //   assignDriver: update(
