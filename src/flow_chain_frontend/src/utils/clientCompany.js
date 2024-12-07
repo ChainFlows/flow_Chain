@@ -162,11 +162,11 @@ export async function paySupplier(order) {
   const orderResponse = await chainflowCanister.createReservePay(order.orderId);
   console.log("orderResponse", orderResponse);
   const sellerPrincipal = Principal.from(orderResponse.Ok.supplierReceiver);
-  const sellerAddress = await chainflowCanister.getAddressFromPrincipal(
-    sellerPrincipal
-  );
+  // const sellerAddress = await chainflowCanister.getAddressFromPrincipal(
+  //   sellerPrincipal
+  // );
   const block = await transferICP(
-    sellerAddress,
+    // sellerAddress,
     orderResponse.Ok.price,
     orderResponse.Ok.memo
   );
