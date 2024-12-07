@@ -82,3 +82,19 @@ export async function get_driver_maintenance_records(driver_id) {
   }
 }
 
+// add_driver_to_supply_company
+export async function add_driver_to_supply_company(supplier_id, driver_id) {
+  try {
+    return await window.canister.flowchain.add_driver_to_supply_company(
+      supplier_id,
+        driver_id
+    );
+  } catch (err) {
+    if (err.name === "AgentHTTPResponseError") {
+      const authClient = window.auth.client;
+      await authClient.logout();
+    }
+    return {};
+  }
+}
+

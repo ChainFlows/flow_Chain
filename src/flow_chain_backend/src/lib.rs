@@ -396,7 +396,7 @@ fn get_client_active_orders(client_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
-                if order.company_id == client_id && order.order_status != "Active" {
+                if order.company_id == client_id && order.supplier_id.is_some() {
                     Some(order.clone())
                 } else {
                     None
@@ -606,7 +606,7 @@ fn get_supplier_active_orders(supplier_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
-                if order.supplier_id == Some(supplier_id.to_string()) && order.order_status != "Active" {
+                if order.supplier_id == Some(supplier_id.to_string()) && order.order_status == "Assigned" {
                     Some(order.clone())
                 } else {
                     None
@@ -642,7 +642,7 @@ fn get_supplier_new_orders(supplier_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
-                if order.supplier_id == Some(supplier_id.to_string()) {
+                if order.supplier_id == Some(supplier_id.to_string()) && order.order_status == "New" {
                     Some(order.clone())
                 } else {
                     None
@@ -846,7 +846,7 @@ fn get_driver_active_orders(driver_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
-                if order.driver_id == Some(driver_id.to_string()) && order.order_status != "Active" {
+                if order.driver_id == Some(driver_id.to_string()) && order.order_status == "Assigned" {
                     Some(order.clone())
                 } else {
                     None
@@ -1434,7 +1434,6 @@ fn assign_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
         match orders.get(&order_id) {
             Some(existing_order) => {
                 let mut order = existing_order.clone();
-                order.order_status = "current".to_string();
                 order.supplier_id = Some(supplier_id.to_string());
                 orders.insert(order_id, order.clone());
 
@@ -1456,7 +1455,7 @@ fn assign_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
 //       }
 //       const orderDetails = orderDetailsOpt.Some;
 //       orderDetails.driverId = Some(driverId);
-//       orderDetails.orderStatus = "assigned";
+//       orderDetails.orderStatus = "Assigned";
 //       // change driver status
 //       const driverOpt = driverStorage.get(driverId);
 //       if ("None" in driverOpt) {
@@ -1479,7 +1478,7 @@ fn assign_driver(order_id: u64, driver_id: u64) -> Result<Order, String> {
             Some(existing_order) => {
                 let mut order = existing_order.clone();
                 order.driver_id = Some(driver_id.to_string());
-                order.order_status = "assigned".to_string();
+                order.order_status = "Assigned".to_string();
                 // change driver status to busy dont use match 
                 let driver_opt = DRIVERS.with(|drivers| drivers.borrow().get(&driver_id));
                 if let Some(mut driver) = driver_opt {
