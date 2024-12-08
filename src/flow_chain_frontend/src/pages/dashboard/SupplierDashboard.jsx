@@ -210,7 +210,7 @@ export default function SupplierDashboard({ supplier }) {
             // setOrderId={setOrderId}
           />
         </div>
-        <div>
+        {/* <div>
           <SupplierDeliveryOrdersTable
             data={{
               completedOrders: completedOrders,
@@ -223,7 +223,7 @@ export default function SupplierDashboard({ supplier }) {
             // bidModal={setIsCreateBidModalOpen}
             // setOrderId={setOrderId}
           />
-        </div>
+        </div> */}
         {/* <div>
           <SupplierItemsTable />
         </div> */}

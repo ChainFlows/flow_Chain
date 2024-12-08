@@ -276,7 +276,7 @@ export default function SupplierDeliveryOrdersTable({
                           ? "Assign Driver"
                           : activeTab === "pending"
                           ? "Mark Completed"
-                          : ""}
+                          : "Pay Modal"}
                       </button>
                       <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
                         <Trash className="w-4 h-4 text-gray-400" />
