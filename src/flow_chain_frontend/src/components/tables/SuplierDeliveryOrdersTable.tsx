@@ -28,10 +28,10 @@ interface Order {
   order_weight: number;
   priority: "low" | "medium" | "high";
   category: string;
-  status: "New" | "pending" | "completed";
+  status: "New" | "current" | "Completed";
 }
 
-type OrderStatus = "New" | "pending" | "completed";
+type OrderStatus = "New" | "current" | "Completed";
 
 interface Order {
   id: string;
@@ -44,7 +44,7 @@ export default function SupplierDeliveryOrdersTable({
   setUpdate,
 }) {
   const [activeTab, setActiveTab] = useState<
-    "Listings" | "New" | "pending" | "completed"
+    "Listings" | "New" | "current" | "Completed"
   >("Listings");
 
   const [orderId, setOrderId] = useState(0);
@@ -90,9 +90,9 @@ export default function SupplierDeliveryOrdersTable({
         return orderListings;
       case "New":
         return newOrders;
-      case "pending":
+      case "current":
         return pendingOrders;
-      case "completed":
+      case "Completed":
         return completedOrders;
       default:
         return [];
@@ -100,7 +100,7 @@ export default function SupplierDeliveryOrdersTable({
   };
   // filter to get ordders with order type "shipping"
   const filteredOrders = () =>
-    groupedOrders().filter((order) => order.order_type === "delivery");
+    groupedOrders().filter((order) => order.order_type === "shipping");
 
   // const orders_: Order[] = orders;
   console.log("The orders are: ", orders_);
@@ -111,9 +111,9 @@ export default function SupplierDeliveryOrdersTable({
     switch (status) {
       case "New":
         return <Package className="w-5 h-5 text-blue-500" />;
-      case "pending":
+      case "current":
         return <Clock className="w-5 h-5 text-orange-500" />;
-      case "completed":
+      case "Completed":
         return <CheckCircle className="w-5 h-5 text-green-500" />;
     }
   };
@@ -140,7 +140,7 @@ export default function SupplierDeliveryOrdersTable({
           Items Purchase & Delivery Orders
         </h2>
         <div className="flex gap-2">
-          {(["Listings", "New", "pending", "completed"] as const).map(
+          {(["Listings", "New", "current", "Completed"] as const).map(
             (status) => (
               <button
                 key={status}
@@ -192,7 +192,7 @@ export default function SupplierDeliveryOrdersTable({
                   CATEGORY
                 </th>
                 <th className="pb-4 font-medium text-gray-500 w-32">STATUS</th>
-                <th className="pb-4 font-medium text-gray-500 w-40">ACTIONS</th>
+                <th className="pb-4 font-medium text-gray-500 w-44">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -261,7 +261,7 @@ export default function SupplierDeliveryOrdersTable({
                             ? setIsCreateBidModalOpen(true)
                             : activeTab === "New"
                             ? setIsAssignDriverModalOpen(true)
-                            : activeTab === "pending"
+                            : activeTab === "current"
                             ? handleChangeOrderStatus(order.id, "Completed")
                             : console.log("View Details");
                         }}
@@ -271,10 +271,12 @@ export default function SupplierDeliveryOrdersTable({
                           ? "Add Bid"
                           : activeTab === "New"
                           ? "Assign Driver"
+                          : activeTab === "current"
+                          ? "mark Completed"
+                          : ""}
                           : activeTab === "pending"
                           ? "Mark Completed"
                           : "Pay Modal"}
-
                       </button>
                       <button className="p-2 hover:bg-gray-50 rounded-lg transition-colors">
                         <Trash className="w-4 h-4 text-gray-400" />
