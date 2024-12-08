@@ -38,31 +38,35 @@ interface Order {
   order_status: OrderStatus;
 }
 
-export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpdate }) {
+export default function SupplierShippingOrdersTable({
+  data,
+  supplier_id,
+  setUpdate,
+}) {
   const [activeTab, setActiveTab] = useState<
     "Listings" | "New" | "current" | "completed"
   >("Listings");
 
   const [orderId, setOrderId] = useState(0);
-  const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] = useState(false);
+  const [isCreateQuotationModalOpen, setIsCreateQuotationModalOpen] =
+    useState(false);
   const [isAssignDriverModalOpen, setIsAssignDriverModalOpen] = useState(false);
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  console.log("The orders are: ", data);
-  const { completedOrders, currentOrders, newOrders, orderListings } = data;
-  // merge all the orders to one array from completedOrders,currentOrders,newOrders, arrays
+  console.log("The shipp orders are: ", data);
+  const { completedOrders, pendingOrders, newOrders, orderListings } = data;
+  // merge all the orders to one array from completedOrders,pendingOrders,newOrders, arrays
 
   const ordersList = [
     ...completedOrders,
-    ...currentOrders,
+    ...pendingOrders,
     ...newOrders,
     ...orderListings,
   ];
 
   const assignDriverFun = (orderId, driverId) => {
     assignDriverFunc(orderId, driverId, setLoading);
-
   };
 
   const saveQuotationFun = (data) => {
@@ -88,18 +92,18 @@ export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpda
       case "New":
         return newOrders;
       case "current":
-        return currentOrders;
+        return pendingOrders;
       case "completed":
         return completedOrders;
       default:
         return [];
     }
   };
-    
-    const filteredOrders = () => {
-        const orders = ordersList;
-        return orders?.filter((order) => order.order_type === "delivery");
-    };
+
+  const filteredOrders = () => {
+    const orders = ordersList;
+    return orders?.filter((order) => order.order_type === "shipping");
+  };
 
   // const orders_: Order[] = orders;
   console.log("The orders are: ", orders_);
@@ -108,37 +112,36 @@ export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpda
   console.log("filteredOrders: ", filteredOrders());
 
   const getStatusDropdown = (
-  currentStatus: OrderStatus,
-  onChangeStatus: (newStatus: OrderStatus) => void
-) => {
-  const statusOptions: OrderStatus[] = ["New", "pending", "completed"];
+    currentStatus: OrderStatus,
+    onChangeStatus: (newStatus: OrderStatus) => void
+  ) => {
+    const statusOptions: OrderStatus[] = ["New", "pending", "completed"];
 
-  return (
-    <select
-      value={currentStatus}
-      onChange={(e) => onChangeStatus(e.target.value as OrderStatus)}
-      className="bg-transparent border-none text-sm capitalize focus:ring-0"
-    >
-      {statusOptions.map((status) => (
-        <option key={status} value={status}>
-          {status}
-        </option>
-      ))}
-    </select>
-  );
+    return (
+      <select
+        value={currentStatus}
+        onChange={(e) => onChangeStatus(e.target.value as OrderStatus)}
+        className="bg-transparent border-none text-sm capitalize focus:ring-0"
+      >
+        {statusOptions.map((status) => (
+          <option key={status} value={status}>
+            {status}
+          </option>
+        ))}
+      </select>
+    );
   };
-  
-  const getStatusIcon = (status: Order['status']) => {
+
+  const getStatusIcon = (status: Order["status"]) => {
     switch (status) {
-      case 'New':
+      case "New":
         return <Package className="w-5 h-5 text-blue-500" />;
-      case 'pending':
+      case "pending":
         return <Clock className="w-5 h-5 text-orange-500" />;
-      case 'completed':
+      case "completed":
         return <CheckCircle className="w-5 h-5 text-green-500" />;
     }
   };
-
 
   const getPriorityColor = (priority: Order["priority"]) => {
     switch (priority) {
@@ -158,7 +161,7 @@ export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpda
   return (
     <div className="bg-white rounded-3xl p-8 mb-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold">Items Purchase Orders</h2>
+        <h2 className="text-lg font-semibold">Items Shipping Orders</h2>
         <div className="flex gap-2">
           {(["Listings", "New", "current", "completed"] as const).map(
             (status) => (
@@ -212,8 +215,7 @@ export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpda
                   CATEGORY
                 </th>
                 <th className="pb-4 font-medium text-gray-500 w-32">STATUS</th>
-                <th className="pb-4 font-medium text-gray-500 w-32">ACTIONS</th>
-                <th className="pb-4 w-20"></th>
+                <th className="pb-4 font-medium text-gray-500 w-40">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -265,15 +267,15 @@ export default function SupplierDeliveryOrdersTable({ data, supplier_id, setUpda
                     </div>
                   </td>
                   <td className="py-4">
-                  <div className="flex items-center gap-2">
-                    {getStatusIcon(order.order_status)}
-                    {getStatusDropdown(order.order_status, (newStatus) =>
-                      handleChangeOrderStatus(order.id, newStatus)
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(order.order_status)}
+                      {getStatusDropdown(order.order_status, (newStatus) =>
+                        handleChangeOrderStatus(order.id, newStatus)
                       )}
-                    <span className="sr-only">{order.order_status}</span> {/* Hidden text for accessibility */}
-                  </div>
-                </td>
-
+                      <span className="sr-only">{order.order_status}</span>{" "}
+                      {/* Hidden text for accessibility */}
+                    </div>
+                  </td>
 
                   <td className="py-4 min-w-20">
                     <div className="flex justify-end gap-2">

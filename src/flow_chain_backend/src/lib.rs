@@ -8,8 +8,8 @@ use ic_stable_structures::{BoundedStorable, Cell, DefaultMemoryImpl, StableBTree
 // use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 use std::cell::RefCell;
-use std::collections::BTreeMap;
-use validator::Validate;
+// use std::collections::BTreeMap;
+// use validator::Validate;
 
 mod models; // Import the models module
 
@@ -280,7 +280,7 @@ fn generate_uuid() -> u64 {
     let id = ID_COUNTER
         .with(|counter| {
             let current_id = *counter.borrow().get(); // Use the binding to get the current ID
-            counter.borrow_mut().set(current_id + 1); // Now you can safely mutate the counter
+            let _ = counter.borrow_mut().set(current_id + 1); // Now you can safely mutate the counter
             current_id // Return the current_id
         });
 
@@ -452,8 +452,6 @@ fn get_client_new_orders(client_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
-                println!("Order: {:?}", order);
-                println!("Client ID: {:?}", client_id);
                 if order.company_id == client_id && order.supplier_id == None {
 
                     Some(order.clone())
@@ -1110,6 +1108,83 @@ fn get_order_items(order_id: u64) -> Result<Vec<(ItemDetails, u64)>, String> {
     }
 }
 
+#[ic_cdk::query]
+fn search_order(search_term: String) -> Vec<Order> {    
+    // Attempt to get supplier company
+    let supplier_company = SUPPLIERS.with(|suppliers| {
+        let suppliers = suppliers.borrow();
+        let supplier = suppliers
+            .iter()
+            .find(|(_, supplier)| supplier.owner.to_text() == caller().to_text());
+        match supplier {
+            Some((_, supplier)) => Ok(supplier.clone()),
+            None => Err("Supplier company not found".to_string()),
+        }
+    }).ok();
+
+    // Attempt to get client company
+    let client_company = CLIENTS.with(|clients| {
+        let clients = clients.borrow();
+        let client = clients
+            .iter()
+            .find(|(_, client)| client.owner.to_text() == caller().to_text());
+        match client {
+            Some((_, client)) => Ok(client.clone()),
+            None => Err("Client company not found".to_string()),
+        }
+    }).ok();
+
+    // // Log the available entities
+    // if let Some(ref company) = supplier_company {
+    //     ic_cdk::println!("Supplier Company: {:?}", company);
+    // } else if let Some(ref company) = client_company {
+    //     ic_cdk::println!("Client Company: {:?}", company);
+    // } else {
+    //     ic_cdk::println!("Neither supplier nor client company found for the caller.");
+    //     return vec![]; // Return empty if neither is available
+    // }
+
+    // Convert search term to lowercase for case-insensitive comparison
+    let search_term_lower = search_term.to_lowercase();
+
+    ORDERS.with(|orders| {
+        orders
+            .borrow()
+            .iter()
+            .filter_map(|(_, order)| {
+                let name_contains_query = order
+                    .order_name
+                    .to_lowercase()
+                    .contains(&search_term_lower);
+                let type_contains_query = order
+                    .order_type
+                    .to_lowercase()
+                    .contains(&search_term_lower);
+
+                let matches_company = if let Some(ref client) = client_company {
+                    order.company_id == client.id
+                } else if let Some(ref supplier) = supplier_company {
+                    order
+                        .supplier_id
+                        .clone()
+                        .map(|id| id.to_string())
+                        == Some(supplier.id.to_string())
+                } else {
+                    false
+                };
+
+                if (name_contains_query || type_contains_query) && matches_company {
+                    Some(order.clone())
+                } else {
+                    None
+                }
+            })
+            .collect()
+    })
+}
+
+
+
 //Function to add Item 
 #[ic_cdk::update]
 fn add_item_to_order(order_id: u64, item: OrderItem) -> Result<Order, String> {
@@ -1130,7 +1205,6 @@ fn add_item_to_order(order_id: u64, item: OrderItem) -> Result<Order, String> {
 // Now implement the bidding functionality:
 #[ic_cdk::update]
 fn create_bid(payload: BidPayload) -> Result<Bid, String> {
-    println!("Payload: {:?}", payload);
     let caller = ic_cdk::caller();
     
     // Verify the order exists and is open for bidding
@@ -1149,8 +1223,6 @@ fn create_bid(payload: BidPayload) -> Result<Bid, String> {
             .find(|(_, s)| s.owner.to_text() == caller.to_text())
             .map(|(_, s)| s.clone())
     }).ok_or("Only registered suppliers can bid")?;
-
-    println!("Supplier: {:?}", supplier);
 
     let current_time = ic_cdk::api::time().to_string();
     
@@ -1339,7 +1411,7 @@ fn withdraw_bid(bid_id: u64) -> Result<Bid, String> {
     }).ok_or("Bid not found")?;
 
     // Verify the caller is the supplier who created the bid
-    let supplier = SUPPLIERS.with(|suppliers| {
+    let _supplier = SUPPLIERS.with(|suppliers| {
         suppliers.borrow()
             .iter()
             .find(|(_, s)| s.owner == caller && s.id == bid.supplier_id)
@@ -1404,11 +1476,7 @@ fn get_supplier_active_bids(supplier_id: u64) -> Vec<Bid> {
 fn assign_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
     ORDERS.with(|orders| {
         let mut orders = orders.borrow_mut();
-        let quotations = QUOTATIONS.with(|quotations| {
-            let quotations = quotations.borrow();
-            let values: Vec<_> = quotations.iter().map(|(_key, value)| value.clone()).collect();
-            // Now `values` contains all the values from the `StableBTreeMap`
-        });
+
         let quotation = QUOTATIONS.with(|quotations| {
             let quotations_borrowed = quotations.borrow();
             let quotation = quotations_borrowed.iter().find(|(_key, value)| {
@@ -1444,6 +1512,57 @@ fn assign_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
         }
     })
 }
+
+// Function to assign supplier and change bid status
+#[ic_cdk::update]
+fn assign_bid_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String> {
+    ORDERS.with(|orders| {
+        let mut orders = orders.borrow_mut();
+
+        // Fetch all bids
+        let _bids = BIDS.with(|bids| {
+            let bids = bids.borrow();
+            bids.iter().map(|(_key, value)| value.clone()).collect::<Vec<_>>()
+        });
+
+        // Find the bid matching the order_id and supplier_id
+        let bid = BIDS.with(|bids| {
+            let bids_borrowed = bids.borrow();
+            bids_borrowed
+                .iter()
+                .find(|(_key, value)| value.order_id == order_id && value.supplier_id == supplier_id)
+                .map(|(_key, value)| value.clone()) // Clone the bid value if necessary
+                .ok_or_else(|| format!("Bid not found for order_id={} and supplier_id={}", order_id, supplier_id))
+        });
+
+        match bid {
+            Ok(bid) => {
+                // Update the bid status to "approved"
+                let mut bid = bid.clone();
+                bid.status = BidStatus::Approved;
+                BIDS.with(|bids| {
+                    bids.borrow_mut().insert(bid.id, bid.clone());
+                });
+            }
+            Err(e) => return Err(e),
+        }
+
+        // Update the corresponding order
+        match orders.get(&order_id) {
+            Some(existing_order) => {
+                let mut order = existing_order.clone();
+                order.order_status = "Assigned".to_string();
+                order.supplier_id = Some(supplier_id.to_string());
+                orders.insert(order_id, order.clone());
+
+                Ok(order)
+            }
+            None => Err(format!("Order with id={} not found", order_id)),
+        }
+    })
+}
+
+
 
 //   //   assign driver to order
 //   assignDriver: update(
@@ -1516,7 +1635,7 @@ fn create_item_as_client(payload: ItemDetailsClientPayload) -> Result<ItemDetail
         dimensions: payload.dimensions,
         manufacturer: payload.manufacturer,
         sku: payload.sku,
-        status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
+        status: if payload.quantity > 0 { "in-stock".to_string() } else { "out-of-stock".to_string() },
         client_id: match payload.client_id {
             Some(id) => Some(id),
             None => None,
@@ -1551,7 +1670,7 @@ fn update_item_as_client(id: u64, payload: ItemDetailsClientPayload) -> Result<I
                 dimensions: payload.dimensions,
                 manufacturer: payload.manufacturer,
                 sku: payload.sku,
-                status: if payload.quantity > 0 { "In Stock".to_string() } else { "Out of Stock".to_string() },
+                status: if payload.quantity > 0 { "in-stock".to_string() } else { "out-of-stock".to_string() },
                 client_id: payload.client_id,
                 supplier_id: None,
                 created_at: existing_item.created_at.clone(),
@@ -1596,9 +1715,6 @@ fn list_items_by_client(client_id: u64) -> Vec<ItemDetails> {
             .iter()
             .filter_map(|(_, item)| {
                 if item.client_id == Some(client_id) {
-
-                    println!("Item: {:?}", item.client_id);
-                    println!("Client ID: {:?}", client_id);
                     Some(item.clone())
                 } else {
                     None
@@ -1639,14 +1755,29 @@ fn delete_item(id: u64) -> Result<ItemDetails, String> {
     })
 }
 
-// Function to search items by category
+// Function to search items
 #[ic_cdk::query]
-fn search_items_by_category(category: String) -> Vec<ItemDetails> {
+fn search_items(term: String) -> Vec<ItemDetails> {
     ITEMS.with(|items| {
+        let search_term_lower = term.to_lowercase();
         items.borrow()
             .iter()
-            .filter(|(_, item)| item.category.to_lowercase() == category.to_lowercase())
-            .map(|(_, item)| item.clone())
+            .filter_map(|(_, item)| {
+                let name_contains_query = item
+                    .name
+                    .to_lowercase()
+                    .contains(&search_term_lower);
+                let type_contains_query = item
+                    .category
+                    .to_lowercase()
+                    .contains(&search_term_lower);
+
+                if name_contains_query || type_contains_query {
+                    Some(item.clone())
+                } else {
+                    None
+                }
+            })
             .collect()
     })
 }
@@ -1656,11 +1787,9 @@ fn search_items_by_category(category: String) -> Vec<ItemDetails> {
 fn create_warehouse(supplier_id: u64, payload: WarehousePayload) -> Result<Warehouse, String> {
     // Verify if the supplier exists
 
-    let supplier = SUPPLIERS.with(|suppliers| {
+    SUPPLIERS.with(|suppliers| {
         suppliers.borrow().get(&supplier_id)
     }).ok_or("Supplier not found")?;
-
-    println!("Supplier: {:?}", supplier);
 
     let warehouse = Warehouse {
         id: generate_uuid(),
@@ -1706,7 +1835,7 @@ fn add_item_to_warehouse(
         
         if let Some(mut warehouse) = warehouses.get(&payload.warehouse_id) {
             // Check if item exists
-            let item = ITEMS.with(|items| {
+            ITEMS.with(|items| {
                 items.borrow().get(&payload.item_id)
             }).ok_or("Item not found")?;
 
@@ -1941,7 +2070,7 @@ fn get_warehouse_capacity_status(warehouse_id: u64) -> Result<(u64, u64, f64), S
 }
 
 // Payment System Types and Constants
-const ICP_FEE: u64 = 10_000;
+const _ICP_FEE: u64 = 10_000;
 const PAYMENT_RESERVATION_PERIOD: u64 = 12000;
 
 impl Storable for PaymentReservation {
@@ -1989,6 +2118,9 @@ async fn create_payment_reservation(amount: u64) -> Result<PaymentReservation, E
 async fn verify_payment(reservation_id: u64, block_height: u64) -> Result<bool, Error> {
     let caller = caller();
 
+    // TODO use blockheight to verify payment
+    let _block = block_height;
+
     PAYMENT_RESERVATIONS.with(|reservations| {
         let mut reservations = reservations.borrow_mut();
         let reservation = reservations
@@ -2022,21 +2154,22 @@ async fn verify_payment(reservation_id: u64, block_height: u64) -> Result<bool, 
 }
 
 // Additional Helper Functions
-fn generate_payment_memo() -> u64 {
-    let now = ic_cdk::api::time();
-    let random = ic_cdk::api::call::arg_data_raw(); // Directly assign the Vec<u8>
-    let combined = format!("{}{:?}", now, random);
-    let hash = hash_string(&combined);
-    (hash as u64) & 0xFFFFFFFFFFFFFFFF
-}
+// todo uncomment these lines to implement payments
+// fn generate_payment_memo() -> u64 {
+//     let now = ic_cdk::api::time();
+//     let random = ic_cdk::api::call::arg_data_raw(); // Directly assign the Vec<u8>
+//     let combined = format!("{}{:?}", now, random);
+//     let hash = hash_string(&combined);
+//     (hash as u64) & 0xFFFFFFFFFFFFFFFF
+// }
 
-fn hash_string(input: &str) -> u32 {
-    let mut hash: u32 = 5381;
-    for byte in input.bytes() {
-        hash = ((hash << 5).wrapping_add(hash)).wrapping_add(byte as u32);
-    }
-    hash
-}
+// fn hash_string(input: &str) -> u32 {
+//     let mut hash: u32 = 5381;
+//     for byte in input.bytes() {
+//         hash = ((hash << 5).wrapping_add(hash)).wrapping_add(byte as u32);
+//     }
+//     hash
+// }
 
 // Additional Query Functions
 #[ic_cdk::query]

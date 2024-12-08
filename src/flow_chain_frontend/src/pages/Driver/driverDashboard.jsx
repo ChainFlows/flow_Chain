@@ -11,7 +11,7 @@ import ActiveOrders from "../../components/driver/activeOrders";
 export default function driverDashboard({ driver }) {
   const { id, name, logo } = driver;
 
-  const datas = { name, logo };
+  const datas = { id, name, logo, role: "Driver" };
 
   const [activeTab, setActiveTab] = useState("due");
   const [activeOrders, setActiveOrders] = useState([]);
