@@ -640,7 +640,7 @@ fn get_supplier_new_orders(supplier_id: u64) -> Vec<Order> {
             .borrow()
             .iter()
             .filter_map(|(_, order)| {
-                if order.supplier_id == Some(supplier_id.to_string()) && order.order_status == "New" {
+                if order.supplier_id == Some(supplier_id.to_string()) && order.order_status == "current" {
                     Some(order.clone())
                 } else {
                     None
@@ -1551,7 +1551,7 @@ fn assign_bid_supplier(order_id: u64, supplier_id: u64) -> Result<Order, String>
         match orders.get(&order_id) {
             Some(existing_order) => {
                 let mut order = existing_order.clone();
-                order.order_status = "Assigned".to_string();
+                order.order_status = "current".to_string();
                 order.supplier_id = Some(supplier_id.to_string());
                 orders.insert(order_id, order.clone());
 
