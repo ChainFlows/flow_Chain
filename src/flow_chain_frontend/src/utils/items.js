@@ -76,10 +76,10 @@ export async function getItem(item_id) {
   }
 }
 
-// search_items_by_category
-export async function searchItemsByCategory(category) {
+// search_items
+export async function searchItems(term) {
   try {
-    return await flow_chain_backend.search_items_by_category(category);
+    return await flow_chain_backend.search_items(term);
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;

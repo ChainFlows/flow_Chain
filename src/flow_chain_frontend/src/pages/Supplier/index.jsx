@@ -29,8 +29,11 @@ const Supplier = () => {
     }
   });
 
+  const windowAuth = window.auth.isAuthenticated;
+
   console.log("supplier", supplier);
   console.log("supplier2 auth", isAuthenticated);
+  console.log("auth window", windowAuth);
 
   useEffect(() => {
     fetchSupplier();

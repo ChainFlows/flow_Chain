@@ -349,7 +349,8 @@ service : {
   mark_order_as_completed : (nat64) -> (Result_2);
   remove_item_from_warehouse : (nat64, nat64, nat64) -> (Result_3);
   search_client_company : (text) -> (vec Client) query;
-  search_items_by_category : (text) -> (vec ItemDetails) query;
+  search_items : (text) -> (vec ItemDetails) query;
+  search_order : (text) -> (vec Order) query;
   search_supplier_company : (text) -> (vec Supplier) query;
   update_client_company : (nat64, ClientCompanyPayload) -> (Result);
   update_driver : (nat64, UpdateDriverPayload) -> (Result_6);
