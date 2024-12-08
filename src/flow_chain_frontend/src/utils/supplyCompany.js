@@ -166,11 +166,11 @@ export async function payDriver(order, amount) {
   );
   console.log("orderResponse", orderResponse);
   const driverPrincipal = Principal.from(orderResponse.Ok.driverReciever);
-  const driverAddress = await chainflowCanister.getAddressFromPrincipal(
-    driverPrincipal
-  );
+  // const driverAddress = await chainflowCanister.getAddressFromPrincipal(
+  //   driverPrincipal
+  // );
   const block = await transferICP(
-    driverAddress,
+    // driverAddress,
     orderResponse.Ok.price,
     orderResponse.Ok.memo
   );

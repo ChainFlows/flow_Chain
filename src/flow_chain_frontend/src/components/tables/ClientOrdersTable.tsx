@@ -141,92 +141,88 @@ export default function ClientOrdersTable({ orders, save, save2 }) {
             </thead>
             <tbody>
               {filteredOrders.map((order) => (
-                <>
-                  <tr
-                    key={order.id}
-                    className="border-b border-gray-100 last:border-0"
-                  >
-                    <td className="py-4 font-medium truncate">
-                      {order.id.toString()}
-                    </td>
-                    <td className="py-4">
-                      <div className="truncate hover:whitespace-normal">
-                        {order.order_name}
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <div className="truncate hover:whitespace-normal">
-                        {order.company_name}
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      {new Date(order.expected_delivery).toLocaleDateString()}
-                    </td>
-                    <td className="py-4">
-                      <div className="truncate hover:whitespace-normal hover:relative hover:z-10 hover:bg-white">
-                        {order.pickup_address}
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <div className="truncate hover:whitespace-normal hover:relative hover:z-10 hover:bg-white">
-                        {order.delivery_address}
-                      </div>
-                    </td>
-                    <td className="py-4">{order.order_type}</td>
-                    <td className="py-4">{order.order_weight}</td>
-                    <td className="py-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs ${getPriorityColor(
-                          order.priority
-                        )}`}
-                      >
-                        {order.priority}
-                      </span>
-                    </td>
-                    <td className="py-4">
-                      <div className="truncate hover:whitespace-normal">
-                        {order.category}
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(order.status)}
-                        <span className="text-sm capitalize">
-                          {order.status}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <div className="flex justify-end gap-2">
-                        {/* Show this button below only when the order is in 'New' */}
-                        {order.status === "New" &&
-                          order.order_type === "delivery" && (
-                            <button
-                              className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              onClick={() => {
-                                setSelectedOrder(order.id);
-                                setIsQuotationModalOpen(true);
-                              }}
-                            >
-                              Check Quotations
-                            </button>
-                          )}
-                        {order.status === "New" &&
-                          order.order_type === "shipping" && (
-                            <button
-                              className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
-                              onClick={() => {
-                                setSelectedOrder(order.id);
-                                setIsBidModalOpen(true);
-                              }}
-                            >
-                              Check Bids
-                            </button>
-                          )}
-                      </div>
-                    </td>
-                  </tr>
-                </>
+                <tr
+                  key={order.id}
+                  className="border-b border-gray-100 last:border-0"
+                >
+                  <td className="py-4 font-medium truncate">
+                    {order.id.toString()}
+                  </td>
+                  <td className="py-4">
+                    <div className="truncate hover:whitespace-normal">
+                      {order.order_name}
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="truncate hover:whitespace-normal">
+                      {order.company_name}
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    {new Date(order.expected_delivery).toLocaleDateString()}
+                  </td>
+                  <td className="py-4">
+                    <div className="truncate hover:whitespace-normal hover:relative hover:z-10 hover:bg-white">
+                      {order.pickup_address}
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="truncate hover:whitespace-normal hover:relative hover:z-10 hover:bg-white">
+                      {order.delivery_address}
+                    </div>
+                  </td>
+                  <td className="py-4">{order.order_type}</td>
+                  <td className="py-4">{order.order_weight}</td>
+                  <td className="py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs ${getPriorityColor(
+                        order.priority
+                      )}`}
+                    >
+                      {order.priority}
+                    </span>
+                  </td>
+                  <td className="py-4">
+                    <div className="truncate hover:whitespace-normal">
+                      {order.category}
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(order.status)}
+                      <span className="text-sm capitalize">{order.status}</span>
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="flex justify-end gap-2">
+                      {/* Show this button below only when the order is in 'New' */}
+                      {order.status === "New" &&
+                        order.order_type === "delivery" && (
+                          <button
+                            className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            onClick={() => {
+                              setSelectedOrder(order.id);
+                              setIsQuotationModalOpen(true);
+                            }}
+                          >
+                            Check Quotations
+                          </button>
+                        )}
+                      {order.status === "New" &&
+                        order.order_type === "shipping" && (
+                          <button
+                            className="px-4 py-2 bg-blue-900 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                            onClick={() => {
+                              setSelectedOrder(order.id);
+                              setIsBidModalOpen(true);
+                            }}
+                          >
+                            Check Bids
+                          </button>
+                        )}
+                    </div>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
