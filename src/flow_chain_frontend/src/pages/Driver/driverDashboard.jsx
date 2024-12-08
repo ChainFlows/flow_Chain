@@ -16,7 +16,7 @@ export default function driverDashboard({ driver }) {
   const [activeTab, setActiveTab] = useState("due");
   const [activeOrders, setActiveOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState([]);
-  const [pendingDeliveries, setPendingDeliveries] = useState([]);
+  // const [pendingDeliveries, setPendingDeliveries] = useState([]);
 
   const currentDelivery = {
     title: "Medical Delivery",
@@ -80,22 +80,22 @@ export default function driverDashboard({ driver }) {
   };
 
   // Fetch Pending Orders
-  const fetchPendingOrders = async () => {
-    try {
-      const res = await get_driver_pending_orders(id);
-      console.log("Pending Orders", res);
-      setPendingDeliveries(res || []);
-    } catch (error) {
-      console.error("Error fetching pending orders:", error);
-      setPendingDeliveries([]);
-    }
-  };
+  // const fetchPendingOrders = async () => {
+  //   try {
+  //     const res = await get_driver_pending_orders(id);
+  //     console.log("Pending Orders", res);
+  //     setPendingDeliveries(res || []);
+  //   } catch (error) {
+  //     console.error("Error fetching pending orders:", error);
+  //     setPendingDeliveries([]);
+  //   }
+  // };
 
   // Fetch data on mount
   useEffect(() => {
     fetchActiveOrders();
     fetchCompletedOrders();
-    fetchPendingOrders();
+    // fetchPendingOrders();
   }, []);
 
   const renderTabContent = () => {
@@ -111,14 +111,6 @@ export default function driverDashboard({ driver }) {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {completedOrders.map((order, index) => (
-            <ActiveOrders key={index} orders={order} />
-          ))}
-        </div>
-      );
-    } else if (activeTab === "pending") {
-      return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {pendingDeliveries.map((order, index) => (
             <ActiveOrders key={index} orders={order} />
           ))}
         </div>

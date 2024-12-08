@@ -28,10 +28,10 @@ interface Order {
   order_weight: number;
   priority: "low" | "medium" | "high";
   category: string;
-  status: "New" | "pending" | "completed";
+  status: "New" | "current" | "Completed";
 }
 
-type OrderStatus = "New" | "pending" | "completed";
+type OrderStatus = "New" | "current" | "Completed";
 
 interface Order {
   id: string;
@@ -44,7 +44,7 @@ export default function SupplierShippingOrdersTable({
   setUpdate,
 }) {
   const [activeTab, setActiveTab] = useState<
-    "Listings" | "New" | "current" | "completed"
+    "Listings" | "New" | "current" | "Completed"
   >("Listings");
 
   const [orderId, setOrderId] = useState(0);
@@ -93,7 +93,7 @@ export default function SupplierShippingOrdersTable({
         return newOrders;
       case "current":
         return pendingOrders;
-      case "completed":
+      case "Completed":
         return completedOrders;
       default:
         return [];
@@ -102,7 +102,7 @@ export default function SupplierShippingOrdersTable({
 
   const filteredOrders = () => {
     const orders = ordersList;
-    return orders?.filter((order) => order.order_type === "shipping");
+    return orderedOrders()?.filter((order) => order.order_type === "delivery");
   };
 
   // const orders_: Order[] = orders;
@@ -115,7 +115,7 @@ export default function SupplierShippingOrdersTable({
     currentStatus: OrderStatus,
     onChangeStatus: (newStatus: OrderStatus) => void
   ) => {
-    const statusOptions: OrderStatus[] = ["New", "pending", "completed"];
+    const statusOptions: OrderStatus[] = ["New", "current", "Completed"];
 
     return (
       <select
@@ -136,9 +136,9 @@ export default function SupplierShippingOrdersTable({
     switch (status) {
       case "New":
         return <Package className="w-5 h-5 text-blue-500" />;
-      case "pending":
+      case "current":
         return <Clock className="w-5 h-5 text-orange-500" />;
-      case "completed":
+      case "Completed":
         return <CheckCircle className="w-5 h-5 text-green-500" />;
     }
   };
@@ -163,7 +163,7 @@ export default function SupplierShippingOrdersTable({
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-semibold">Items Shipping Orders</h2>
         <div className="flex gap-2">
-          {(["Listings", "New", "current", "completed"] as const).map(
+          {(["Listings", "New", "current", "Completed"] as const).map(
             (status) => (
               <button
                 key={status}
@@ -215,7 +215,7 @@ export default function SupplierShippingOrdersTable({
                   CATEGORY
                 </th>
                 <th className="pb-4 font-medium text-gray-500 w-32">STATUS</th>
-                <th className="pb-4 font-medium text-gray-500 w-40">ACTIONS</th>
+                <th className="pb-4 font-medium text-gray-500 w-44">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
