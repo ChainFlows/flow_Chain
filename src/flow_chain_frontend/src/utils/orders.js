@@ -118,9 +118,9 @@ export async function markOrderAsCompleted(completionPayload) {
   }
 }
 
-export async function searchOrderByCategory(query) {
+export async function searchOrders(query) {
   try {
-    return await window.canister.flowchain.searchOrderByCategory(query);
+    return await window.canister.flowchain.search_order(query);
   } catch (err) {
     if (err.name === "AgentHTTPResponseError") {
       const authClient = window.auth.client;

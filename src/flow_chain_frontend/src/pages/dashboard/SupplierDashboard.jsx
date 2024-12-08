@@ -22,14 +22,13 @@ import {
   addDriverToSupplyCompany,
   fetchSupplierDrivers,
 } from "./utils/supplierUtils";
-import SupplierOrdersTable from "../../components/tables/SupplierShippingOrdersTable";
 import SupplierItemsTable from "../../components/tables/SupplierItemsTable";
 import CreateItemModal from "../../components/modals/client/CreateItemModal";
 import CreateWarehouseModal from "../../components/modals/supplier/CreateWarehouseModal";
 import CreateBidModal from "../../components/modals/supplier/CreateBidModal";
 import SupplierDeliveryOrdersTable from "../../components/tables/SuplierDeliveryOrdersTable";
 import AddDriverModal from "../../components/modals/supplier/AddDriverModal";
-
+import SupplierShippingOrdersTable from "../../components/tables/SuplierShippingOrdersTable";
 
 export default function SupplierDashboard({ supplier }) {
   const [searchBarValue32, setSearchBarValue32] = useState("");
@@ -54,7 +53,7 @@ export default function SupplierDashboard({ supplier }) {
 
   console.log("supplier2", supplier);
   const { id, name, logo } = supplier;
-  const datas = { name, logo };
+  const datas = { id, name, logo, role: "Supplier" };
 
   useEffect(() => {
     fetchNewOrders(setNewOrders, setLoading, id);
@@ -183,7 +182,7 @@ export default function SupplierDashboard({ supplier }) {
           </div>
         </div>
         <div>
-          <SupplierOrdersTable
+          <SupplierDeliveryOrdersTable
             data={{
               completedOrders: completedOrders,
               pendingOrders: pendingOrders,
@@ -196,8 +195,9 @@ export default function SupplierDashboard({ supplier }) {
             // setOrderId={setOrderId}
           />
         </div>
+
         <div>
-          <SupplierDeliveryOrdersTable
+          <SupplierShippingOrdersTable
             data={{
               completedOrders: completedOrders,
               pendingOrders: pendingOrders,
@@ -209,21 +209,7 @@ export default function SupplierDashboard({ supplier }) {
             // bidModal={setIsCreateBidModalOpen}
             // setOrderId={setOrderId}
           />
-        </div>
-        {/* <div>
-          <SupplierDeliveryOrdersTable
-            data={{
-              completedOrders: completedOrders,
-              pendingOrders: pendingOrders,
-              newOrders: newOrders,
-              orderListings: orderListings,
-            }}
-            supplier_id={id}
-            setUpdate={setUpdate}
-            // bidModal={setIsCreateBidModalOpen}
-            // setOrderId={setOrderId}
-          />
-        </div> */}
+        </div> 
         {/* <div>
           <SupplierItemsTable />
         </div> */}

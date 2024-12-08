@@ -4,8 +4,6 @@ import { Button as BButton, Modal, Form, FloatingLabel } from "react-bootstrap";
 // import { Button } from "../../components/utils";
 
 const AddItem = ({ save }) => {
-
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -15,21 +13,14 @@ const AddItem = ({ save }) => {
   const [dimensions, setDimensions] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [sku, setSku] = useState("");
- 
 
-  
   console.log("first", typeof 0n);
   // const supplier_id = parseInt(5, 10);
-  
 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  
-
- 
 
   return (
     <>
@@ -147,7 +138,6 @@ const AddItem = ({ save }) => {
           </BButton>
         </Modal.Footer>
       </Modal>
-      
     </>
   );
 };
